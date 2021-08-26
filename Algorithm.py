@@ -21,6 +21,21 @@ class Obstacle:
 
 
 def Hamiltonian_path(): #use option 2 20x20 grid
+    """X1 = input("Please enter a X1:\n")
+    Y1 = input("Please enter a Y1:\n")
+    Orientation1 = input("Please enter a Orientation1:\n")
+    X2 = input("Please enter a X2:\n")
+    Y2 = input("Please enter a Y2:\n")
+    Orientation2 = input("Please enter a Orientation2:\n")
+    X3 = input("Please enter a X3:\n")
+    Y3 = input("Please enter a Y3:\n")
+    Orientation3 = input("Please enter a Orientation3:\n")
+    X4 = input("Please enter a X4:\n")
+    Y4 = input("Please enter a Y4:\n")
+    Orientation4 = input("Please enter a Orientation4:\n")
+    X5 = input("Please enter a X5:\n")
+    Y5 = input("Please enter a Y5:\n")
+    Orientation5 = input("Please enter a Orientation5:\n")"""  # GUI input component may require error handling
     a = Obstacle(1,1,'W')
     b = Obstacle(8,5,'N')
     all = []
