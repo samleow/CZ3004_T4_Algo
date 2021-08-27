@@ -66,7 +66,7 @@ def Hamiltonian_path(): #use option 2 20x20 grid
     print(queue)
     print(ShortestPathCost)
 
-    d = []  
+    d = []  #make neighbours variable in case got 8 obstacles
     d.append({'x':1.5,'y':1.5,'neighbours':[0,1,2,3],'path':[],'cost':0}) #exhaustive search neighbour may need change
     while len(d) != 0:
         temp = d.pop(0)
