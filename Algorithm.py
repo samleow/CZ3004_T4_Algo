@@ -59,7 +59,30 @@ def Hamiltonian_path(): #use option 2 20x20 grid
         unvisited[nearest]['visited'] = True
         U = unvisited[nearest]
         ShortestPathCost += traveldist
-        print(queue)
+
+    print(queue)
+    print(ShortestPathCost)
+
+    d = []  
+    d.append({'x':1.5,'y':1.5,'neighbours':[0,1,2,3],'path':[],'cost':0}) #exhaustive search neighbour may need change
+    while len(d) != 0:
+        temp = d.pop(0)
+        if len(temp['neighbours']) == 0:
+            d.insert(0,temp)
+            for items in d:
+                if len(items['path']) == len(queue) and items['cost'] < ShortestPathCost: 
+                    ShortestPathCost = items['cost']
+                    queue = items['path']
+            break
+        for i in range(len(temp['neighbours'])):
+            new_cost = temp['cost'] + math.sqrt(math.pow(temp['x']-unvisited[temp['neighbours'][i]]['x'],2) + math.pow(temp['y']-unvisited[temp['neighbours'][i]]['y'],2))
+            new_neighbours = temp['neighbours'][:i] + temp['neighbours'][i+1:]
+            new_path = temp['path'] +[temp['neighbours'][i]]
+            
+            d.append({'x':unvisited[temp['neighbours'][i]]['x'], 'y':unvisited[temp['neighbours'][i]]['y'],'neighbours':new_neighbours,'path':new_path,'cost':new_cost})
+    
+    print(queue)
+    print(ShortestPathCost)
 
         
 
