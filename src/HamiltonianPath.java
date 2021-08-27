@@ -40,6 +40,7 @@ public class HamiltonianPath {
         List<car_position> Path = new ArrayList<car_position>();
         ExhaustiveSearch item;
         Double_check.add(new ExhaustiveSearch(1.5,1.5,0,positions,Path));
+        List<car_position> fastestPath = new ArrayList<car_position>();
         while (Double_check.size() != 0)
         {
             item = Double_check.get(0);
@@ -60,6 +61,11 @@ public class HamiltonianPath {
                     New_Path.add(item.getNeighbours().get(i));
                     List<car_position> New_Neighbours = new ArrayList<car_position>(item.getNeighbours());
                     New_Neighbours.remove(i);
+                    if (New_Neighbours.size() == 0 && new_cost < total_dist)
+                    {
+                        fastestPath = New_Path;
+                        total_dist = new_cost;
+                    }
                     Double_check.add(new ExhaustiveSearch(new_x,new_y,new_cost,New_Neighbours,New_Path));
 
                 }
