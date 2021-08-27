@@ -1,5 +1,6 @@
 import math
 
+
 class Obstacle:
     def __init__(self,x,y,direction): #initialise the positions of the obstacle
         self.x = x
@@ -38,6 +39,8 @@ def Hamiltonian_path(): #use option 2 20x20 grid
     Orientation5 = input("Please enter a Orientation5(N,S,E,W):\n")"""  # GUI input component may require error handling
     a = Obstacle(1,1,'W')
     b = Obstacle(8,5,'N')
+    c = Obstacle(7,3,'E')
+    d = Obstacle(3,3,'W')
     all = []
     all.append(a)
     all.append(b)
@@ -84,7 +87,7 @@ def Hamiltonian_path(): #use option 2 20x20 grid
     print(queue)
     print(ShortestPathCost)
 
-        
+    
 
 
 
