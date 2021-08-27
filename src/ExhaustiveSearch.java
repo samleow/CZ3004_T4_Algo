@@ -2,31 +2,36 @@ package src;
 
 import java.util.List;
 
-public class ExhaustiveSearch {
-    double x;
-    double y;
-    double cost;
-    List<car_position> Neighbours;
-    List<car_position> Path;
-    public ExhaustiveSearch(double x,double y, double cost, List<car_position> Neighbours, List<car_position> Path){
-        this.x = x;
-        this.y = y;
-        this.cost = cost;
-        this.Neighbours = Neighbours;
-        this.Path = Path;
-
-    }
-    public  List<car_position> getNeighbours()
-    {
-        return Neighbours;
-    }
-    public  List<car_position> getPath()
-    {
-        return Path;
-    }
-    public double getcost()
-    {
-        return cost;
-    }
-
+public class ExhaustiveSearch
+{
+	double x;
+	double y;
+	double cost;
+	List<CarPosition> neighbours;
+	List<CarPosition> path;
+	
+	public ExhaustiveSearch(double x, double y, double cost, List<CarPosition> neighbours, List<CarPosition> path)
+	{
+		this.x = x;
+		this.y = y;
+		this.cost = cost;
+		this.neighbours = neighbours;
+		this.path = path;
+	}
+	
+	public List<CarPosition> getNeighbours()
+	{
+		return neighbours;
+	}
+	
+	public List<CarPosition> getPath()
+	{
+		return path;
+	}
+	
+	public double getCost()
+	{
+		return cost;
+	}
+	
 }
