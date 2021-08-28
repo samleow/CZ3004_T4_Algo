@@ -51,10 +51,12 @@ public class HamiltonianPath
 		System.out.println(shortest_path);
 		System.out.println(total_dist);
 		
+		//Exhaustive search
 		List<ExhaustiveSearch> double_check = new ArrayList<ExhaustiveSearch>();
 		List<CarPosition> path = new ArrayList<CarPosition>();
 		ExhaustiveSearch item;
-		double_check.add(new ExhaustiveSearch(1.5, 1.5, 0, positions, path));
+		path.add(new CarPosition(1, 4.5, Orientation.SOUTH)); //add start point to path
+		double_check.add(new ExhaustiveSearch(1.5, 1.5, 0, positions, path)); //initialise start point for exhaustive search
 		List<CarPosition> fastest_path = new ArrayList<CarPosition>();
 		while (double_check.size() != 0)
 		{
@@ -67,7 +69,7 @@ public class HamiltonianPath
 			else
 			{
 				double_check.remove(0);
-				for (int i = 0; i < item.neighbours.size(); i++)
+				for (int i = 0; i < item.getNeighbours().size(); i++)
 				{
 					double new_x = item.getNeighbours().get(i).x;
 					double new_y = item.getNeighbours().get(i).y;
