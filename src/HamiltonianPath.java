@@ -11,7 +11,7 @@ public class HamiltonianPath
 	public HamiltonianPath()
 	{
 		//List<Position> obstacles = new ArrayList<Position>();
-		//obstacles.add(0, new Position(1, 1, Orientation.NORTH));
+		//obstacles.add(0, new Position(1, 1, Orientation.NORTH)); //This mat be used for trip planning
 		
 		// List of waypoints/nodes
 		List<CarPosition> positions = new ArrayList<CarPosition>();
