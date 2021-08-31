@@ -8,15 +8,19 @@ import java.util.List;
 import javax.swing.JFrame;
 import javax.swing.JPanel;
 
+import src.Position.Orientation;
+
 public class Simulator
 {
 	// Nested List of Panels as a grid
+	// Grid position based on grid.get(y).get(x)
 	private List<List<JPanel>> grid = new ArrayList<>();
+	private List<Position> obstacles = new ArrayList<Position>();
 	
 	public Simulator()
 	{
 		// Main frame
-		JFrame frame = new JFrame();
+		JFrame frame = new JFrame("Simulator");
 		frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 		// Window default size
 		frame.setSize(800,800);
@@ -38,15 +42,22 @@ public class Simulator
 		}
 		
 		// Robot starting position
-		for(int i=0; i<3; i++)
+		for(int i=0; i<4; i++)
 		{
-			for(int j=0; j<3; j++)
+			for(int j=0; j<4; j++)
 			{
 				grid.get(i).get(j).setBackground(Color.YELLOW);
 			}
 		}
-		// testing grid position
-		grid.get(10).get(15).setBackground(Color.RED);
+		// Obstacle positions
+		obstacles.add(new Position(1, 1, Orientation.WEST));
+		obstacles.add(new Position(8, 5, Orientation.NORTH));
+		obstacles.add(new Position(7, 3, Orientation.EAST));
+		obstacles.add(new Position(3, 3, Orientation.WEST));
+		for (Position o : obstacles)
+		{
+			grid.get((int)o.y).get((int)o.x).setBackground(Color.RED);
+		}
 		
 		frame.setVisible(true);
 	}
