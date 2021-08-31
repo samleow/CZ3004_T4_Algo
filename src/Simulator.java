@@ -1,10 +1,13 @@
 package src;
 
+import java.awt.BorderLayout;
 import java.awt.Color;
+import java.awt.FlowLayout;
 import java.awt.GridLayout;
 import java.util.ArrayList;
 import java.util.List;
 
+import javax.swing.JButton;
 import javax.swing.JFrame;
 import javax.swing.JPanel;
 
@@ -25,7 +28,23 @@ public class Simulator
 		// Window default size
 		frame.setSize(800,800);
 		// Layout of grid
-		frame.setLayout(new GridLayout(20,20,1,1));
+		frame.setLayout(new BorderLayout());
+		
+		// Grid Panel in the center
+		JPanel gridPanel = new JPanel();
+		gridPanel.setLayout(new GridLayout(20,20,1,1));
+		frame.add(gridPanel, BorderLayout.CENTER);
+		
+		// Buttons Panel at the bottom
+		JPanel buttonsPanel = new JPanel();
+		buttonsPanel.setLayout(new FlowLayout());
+		frame.add(buttonsPanel, BorderLayout.PAGE_END);
+		
+		// Buttons
+		JButton button = new JButton("This is a button.");
+		buttonsPanel.add(button);
+		JButton button2 = new JButton("This is button number 2.");
+		buttonsPanel.add(button2);
 		
 		// Grid init
 		for(int i=19; i>=0; i--)
@@ -37,7 +56,7 @@ public class Simulator
 				// Setting grid default color
 				panel.setBackground(Color.BLACK);
 				grid.get(0).add(panel);
-				frame.add(panel);
+				gridPanel.add(panel);
 			}
 		}
 		
