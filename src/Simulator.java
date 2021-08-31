@@ -4,9 +4,12 @@ import java.awt.BorderLayout;
 import java.awt.Color;
 import java.awt.FlowLayout;
 import java.awt.GridLayout;
+import java.awt.Image;
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 
+import javax.imageio.ImageIO;
 import javax.swing.JButton;
 import javax.swing.JFrame;
 import javax.swing.JPanel;
@@ -79,6 +82,18 @@ public class Simulator
 		}
 		
 		frame.setVisible(true);
+	}
+	
+	Image retrieveImage(String path) throws IOException
+	{
+		try {
+			return ImageIO.read(Simulator.class.getResource(path));
+		}
+		catch (IOException e)
+		{
+			e.printStackTrace();
+		}
+		return null;
 	}
 	
 	public static void main(String[] args)
