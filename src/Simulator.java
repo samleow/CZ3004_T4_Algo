@@ -123,6 +123,19 @@ public class Simulator
 		for (Position o : obstacles)
 		{
 			grid.get((int)o.y).get((int)o.x).setBackground(Color.RED);
+			
+			if (o.orientation == Orientation.EAST)
+			{
+				grid.get((int)o.y).get((int)o.x).theta += Math.PI/2;
+			}
+			else if (o.orientation == Orientation.WEST)
+			{
+				grid.get((int)o.y).get((int)o.x).theta -= Math.PI/2;
+			}
+			else if (o.orientation == Orientation.SOUTH)
+			{
+				grid.get((int)o.y).get((int)o.x).theta += Math.PI;
+			}
 			grid.get((int)o.y).get((int)o.x).render = true;
 		}
 		
