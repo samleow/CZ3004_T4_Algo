@@ -56,7 +56,7 @@ public class Simulator
 	private List<List<ImagePanel>> grid = new ArrayList<>();
 	private List<Position> obstacles = new ArrayList<Position>();
 	
-	public Simulator()
+	public Simulator(List<Position> Obstacle)
 	{		
 		// Main frame
 		JFrame frame = new JFrame("Simulator");
@@ -116,10 +116,11 @@ public class Simulator
 		}
 		// Obstacle positions
 		// TODO: implement obstacle positions from io
-		obstacles.add(new Position(1, 1, Orientation.WEST));
+		/*obstacles.add(new Position(1, 1, Orientation.WEST));
 		obstacles.add(new Position(8, 5, Orientation.NORTH));
 		obstacles.add(new Position(7, 3, Orientation.EAST));
-		obstacles.add(new Position(3, 3, Orientation.WEST));
+		obstacles.add(new Position(3, 3, Orientation.WEST));*/
+		this.obstacles = Obstacle;
 		for (Position o : obstacles)
 		{
 			grid.get((int)o.y).get((int)o.x).setBackground(Color.RED);
@@ -171,8 +172,8 @@ public class Simulator
 		return null;
 	}
 	
-	public static void main(String[] args)
+	/*public static void main(String[] args)
 	{
 		new Simulator();
-	}
+	}*/
 }

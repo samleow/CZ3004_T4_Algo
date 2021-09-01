@@ -1,4 +1,4 @@
 1, 1, WEST
-8, 5, NORTH
-7, 3, EAST
-3, 3, WEST
+18, 5, NORTH
+7, 13, EAST
+10, 3, WEST

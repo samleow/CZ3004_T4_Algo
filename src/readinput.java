@@ -35,10 +35,11 @@ public class readinput{
                 }
                     
             }
-            for (Position ac:obstacles)
+            Simulator s = new Simulator(obstacles);
+            /*for (Position ac:obstacles)
             {
                 System.out.println(ac.toString());
-            }
+            }*/
         } catch (FileNotFoundException e) {
             System.out.println("An error has occurred.");
             e.printStackTrace();
@@ -48,6 +49,7 @@ public class readinput{
     public static void main (String args[])
     {
         readinput a = new readinput();
+        
     }
 
 }
