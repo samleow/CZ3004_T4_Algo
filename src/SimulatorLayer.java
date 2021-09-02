@@ -86,6 +86,14 @@ public class SimulatorLayer
 		buttonsPanel.add(button);
 		JButton button2 = new JButton("Turn right.");
 		buttonsPanel.add(button2);
+		JButton button3 = new JButton("Move right.");
+		buttonsPanel.add(button3);
+		JButton button4 = new JButton("Move left.");
+		buttonsPanel.add(button4);
+		JButton button5 = new JButton("Move up.");
+		buttonsPanel.add(button5);
+		JButton button6 = new JButton("Move down.");
+		buttonsPanel.add(button6);
 		
 		Image img = null;
 		Image img_car = null;
@@ -158,7 +166,7 @@ public class SimulatorLayer
             @Override
             public void actionPerformed(ActionEvent e) {
             	car.theta -= Math.PI/2;
-        		//car.setLocation(car.getBounds().x + size_x, car.getBounds().y + size_y);
+        		
             	frame.repaint();
             }
         });
@@ -166,6 +174,34 @@ public class SimulatorLayer
             @Override
             public void actionPerformed(ActionEvent e) {
             	car.theta += Math.PI/2;
+            	frame.repaint();
+            }
+        });
+		button3.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+            	car.setLocation(car.getBounds().x + size_x+margin_x, car.getBounds().y);
+            	frame.repaint();
+            }
+        });
+		button4.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+            	car.setLocation(car.getBounds().x - size_x-margin_x, car.getBounds().y);
+            	frame.repaint();
+            }
+        });
+		button5.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+            	car.setLocation(car.getBounds().x, car.getBounds().y - size_y -margin_y);		//negative because grid is alr at 17 boxes from the top
+            	frame.repaint();
+            }
+        });
+		button6.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+            	car.setLocation(car.getBounds().x, car.getBounds().y+size_y+margin_y);
             	frame.repaint();
             }
         });
