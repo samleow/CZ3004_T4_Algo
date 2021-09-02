@@ -2,6 +2,7 @@ package src;
 
 import java.awt.BorderLayout;
 import java.awt.Color;
+import java.awt.Dimension;
 import java.awt.FlowLayout;
 import java.awt.Graphics;
 import java.awt.Graphics2D;
@@ -16,11 +17,12 @@ import java.util.List;
 import javax.imageio.ImageIO;
 import javax.swing.JButton;
 import javax.swing.JFrame;
+import javax.swing.JLayeredPane;
 import javax.swing.JPanel;
 
 import src.Position.Orientation;
 
-public class Simulator
+public class SimulatorLayer
 {
 	class ImagePanel extends JPanel
 	{
@@ -56,19 +58,22 @@ public class Simulator
 	private List<List<ImagePanel>> grid = new ArrayList<>();
 	private List<Position> obstacles = new ArrayList<Position>();
 	
-	public Simulator(List<Position> Obstacle)
+	public SimulatorLayer(List<Position> Obstacle)
 	{
 		// Main frame
 		JFrame frame = new JFrame("Simulator");
 		frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 		// Window default size
-		frame.setSize(800,800);
+		frame.setSize(850,900);
 		// Layout of grid
 		frame.setLayout(new BorderLayout());
 		
 		// Grid Panel in the center
-		JPanel gridPanel = new JPanel();
-		gridPanel.setLayout(new GridLayout(20,20,1,1));
+		JLayeredPane gridPanel = new JLayeredPane();
+		int size_x = 39, size_y = 39;
+		int margin_x = 1, margin_y = 1;
+		//gridPanel.setLayout(new GridLayout(20,20,1,1));
+		gridPanel.setBounds(0, 0, 20 * (size_x + margin_x), 20 * (size_y + margin_y));
 		frame.add(gridPanel, BorderLayout.CENTER);
 		
 		// Buttons Panel at the bottom
@@ -83,9 +88,11 @@ public class Simulator
 		buttonsPanel.add(button2);
 		
 		Image img = null;
+		Image img_car = null;
 		try {
 			// hardcoded file location !
 			img = retrieveImage("/src/resources/arrow.png");
+			img_car = retrieveImage("/src/resources/car.png");
 		}
 		catch(IOException e)
 		{
@@ -101,10 +108,20 @@ public class Simulator
 				ImagePanel panel = new ImagePanel(img);
 				// Setting grid default color
 				panel.setBackground(Color.BLACK);
+				panel.setBounds(i*(size_x+margin_x),j*(size_y+margin_y),size_x, size_y);
 				grid.get(0).add(panel);
-				gridPanel.add(panel);
+				gridPanel.add(panel, JLayeredPane.DEFAULT_LAYER);
 			}
 		}
+		
+		// car
+		ImagePanel car = new ImagePanel(img_car);
+		car.setBounds(0, 17*(size_y+margin_y), size_x*3, size_y*3);
+		//car.setBackground(Color.cyan);
+		car.setOpaque(false);
+		car.render = true;
+		car.theta = 0;
+		gridPanel.add(car, JLayeredPane.PALETTE_LAYER); 
 		
 		// Robot starting position
 		for(int i=0; i<4; i++)
@@ -140,14 +157,15 @@ public class Simulator
 		button.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
-            	grid.get(1).get(1).theta -= Math.PI/2;
+            	car.theta -= Math.PI/2;
+        		//car.setLocation(car.getBounds().x + size_x, car.getBounds().y + size_y);
             	frame.repaint();
             }
         });
 		button2.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
-            	grid.get(1).get(1).theta += Math.PI/2;
+            	car.theta += Math.PI/2;
             	frame.repaint();
             }
         });
@@ -158,7 +176,7 @@ public class Simulator
 	Image retrieveImage(String path) throws IOException
 	{
 		try {
-			return ImageIO.read(SimulatorLayer.class.getResource(path));
+			return ImageIO.read(Simulator.class.getResource(path));
 		}
 		catch (IOException e)
 		{
@@ -167,8 +185,7 @@ public class Simulator
 		return null;
 	}
 	
-	/*public static void main(String[] args)
-	{
-		new Simulator();
-	}*/
+	
+	  //public static void main(String[] args) { new SimulatorLayer(); }
+	 
 }

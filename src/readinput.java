@@ -35,7 +35,7 @@ public class readinput{
                 }
                     
             }
-            Simulator s = new Simulator(obstacles);
+            SimulatorLayer s = new SimulatorLayer(obstacles);
             /*for (Position ac:obstacles)
             {
                 System.out.println(ac.toString());
