@@ -6,22 +6,29 @@ import java.util.List;
 
 import src.Position.Orientation;
 
-public class HamiltonianPath
+public class HamiltonianPathSimulator
 {
-	public HamiltonianPath()
+	List<CarPosition> fastest_path = new ArrayList<CarPosition>();
+	
+	public HamiltonianPathSimulator(List<Position> obstacles)
 	{
 		//List<Position> obstacles = new ArrayList<Position>();
 		//obstacles.add(0, new Position(1, 1, Orientation.NORTH)); //This mat be used for trip planning
 		
-		// List of waypoints/nodes
 		List<CarPosition> positions = new ArrayList<CarPosition>();
+		// List of waypoints/nodes
+		for (Position obs: obstacles)
+		{
+			positions.add(new CarPosition(obs.x, obs.y, obs.orientation, true));
+		}
+		
 		/*positions.add(new CarPosition(1, 1, Orientation.WEST));
 		positions.add(new CarPosition(8, 5, Orientation.NORTH));
 		positions.add(new CarPosition(7, 3, Orientation.EAST));
 		positions.add(new CarPosition(3, 3, Orientation.WEST));*/
 		
 		List<CarPosition> shortest_path = new ArrayList<CarPosition>();
-		CarPosition start = new CarPosition(1, 4.5, Orientation.SOUTH, false);
+		CarPosition start = new CarPosition(1, 4.5, Orientation.SOUTH, true); //calibrate to 0,0
 		shortest_path.add(start);
 		double total_dist = 0;
 		CarPosition temp = start;
@@ -55,9 +62,9 @@ public class HamiltonianPath
 		List<ExhaustiveSearch> double_check = new ArrayList<ExhaustiveSearch>();
 		List<CarPosition> path = new ArrayList<CarPosition>();
 		ExhaustiveSearch item;
-		path.add(new CarPosition(1, 4.5, Orientation.SOUTH,false)); //add start point to path
+		path.add(new CarPosition(1, 4.5, Orientation.SOUTH, true)); //add start point to path
 		double_check.add(new ExhaustiveSearch(1.5, 1.5, 0, positions, path)); //initialise start point for exhaustive search
-		List<CarPosition> fastest_path = new ArrayList<CarPosition>();
+		
 		while (double_check.size() != 0)
 		{
 			item = double_check.get(0);
@@ -142,7 +149,9 @@ public class HamiltonianPath
 		
 		return cost;
 	}
-	
+	public List<CarPosition> getCarPositions(){
+		return fastest_path;
+	}
 	public static void main(String args[])
 	{
 		HamiltonianPath a = new HamiltonianPath();

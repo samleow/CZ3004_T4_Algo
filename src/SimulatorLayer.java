@@ -33,6 +33,7 @@ public class SimulatorLayer
 	// Grid position based on grid.get(y).get(x)
 	private List<List<ImagePanel>> grid = new ArrayList<>();
 	private List<Position> obstacles = new ArrayList<Position>();
+	private List<CarPosition> positions = new ArrayList<CarPosition>();
 
 	private JFrame frame = null;
 	private ImagePanel car;
@@ -307,7 +308,9 @@ public class SimulatorLayer
 	
 	public void runSimulation()
 	{
-		
+		HamiltonianPathSimulator h = new HamiltonianPathSimulator(obstacles);
+		positions = h.getCarPositions();
+		System.out.println(positions);
 		Timer timer = new Timer(delay, taskPerformer);
 		timer.start();
 	}
