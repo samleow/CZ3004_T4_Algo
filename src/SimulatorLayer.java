@@ -27,7 +27,7 @@ public class SimulatorLayer
 {
 	// Timer delay
 	int delay = 100;
-	int size_x = 39, size_y = 39;
+	int size_x = 29, size_y = 29;
 	int margin_x = 1, margin_y = 1;
 	// Nested List of Panels as a grid
 	// Grid position based on grid.get(y).get(x)
@@ -48,6 +48,13 @@ public class SimulatorLayer
 		{
 			super();
 			this.img = img;
+		}
+		
+		public ImagePanel(ImagePanel imgpnl)
+		{
+			super();
+			this.setBounds(imgpnl.getBounds());
+			this.img = imgpnl.img;
 		}
 
 		@Override
@@ -72,7 +79,7 @@ public class SimulatorLayer
 		frame = new JFrame("Simulator");
 		frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 		// Window default size
-		frame.setSize(850, 900);
+		frame.setSize(750, 700);
 		// Layout of grid
 		frame.setLayout(new BorderLayout());
 
@@ -236,7 +243,6 @@ public class SimulatorLayer
 			}
 		});
 
-		System.out.println("car pos " + car.getLocation());
 		
 		frame.setVisible(true);
 	}
@@ -252,16 +258,21 @@ public class SimulatorLayer
 		}
 		return null;
 	}
-
-	boolean is_visited[] = {false,false,false,false,false};
-	int index = 0;
+	
 	ActionListener taskPerformer = new ActionListener()
 	{
+
+		// TODO: clean up
+		boolean is_visited[] = {false,false,false,false,false};
+		int index = 0;
+		
+		ImagePanel car_ghost;
+		
 		public void actionPerformed(ActionEvent evt)
 		{
 			//car.setLocation(car.getBounds().x, car.getBounds().y - size_y - margin_y);
 			
-			if(!is_visited[index])
+			/*if(!is_visited[index])
 			{
 				if(moveToPosition(obstacles.get(index)))
 				{
@@ -269,11 +280,17 @@ public class SimulatorLayer
 					if(index+1<obstacles.size())
 						index++;
 				}
-			}
+			}*/
 			
-			//moveToPosition(obstacles.get(0));
+			car_ghost = new ImagePanel(car);
+			moveToPosition(obstacles.get(0));
+			
+			System.out.println(index);
+			System.out.println("car pos " + car.getLocation());
+			System.out.println("car ghost " + car_ghost.getLocation());
 			
 			frame.repaint();
+			index++;
 		}
 	};
 	
@@ -302,6 +319,12 @@ public class SimulatorLayer
 		}
 		
 		car.setLocation(car.getBounds().x + x, car.getBounds().y + y);
+		return false;
+	}
+	
+	boolean moveToPositionWithRotation(Position target)
+	{
+		
 		return false;
 	}
 	
