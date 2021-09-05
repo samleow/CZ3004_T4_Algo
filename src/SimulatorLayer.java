@@ -26,8 +26,8 @@ import src.Position.Orientation;
 public class SimulatorLayer
 {
 	// Timer delay
-	int delay = 100;
-	int size_x = 39, size_y = 39;
+	int delay = 500;
+	int size_x = 29, size_y = 29;
 	int margin_x = 1, margin_y = 1;
 	// Nested List of Panels as a grid
 	// Grid position based on grid.get(y).get(x)
@@ -49,6 +49,13 @@ public class SimulatorLayer
 		{
 			super();
 			this.img = img;
+		}
+		
+		public ImagePanel(ImagePanel imgpnl)
+		{
+			super();
+			this.setBounds(imgpnl.getBounds());
+			this.img = imgpnl.img;
 		}
 
 		@Override
@@ -73,7 +80,7 @@ public class SimulatorLayer
 		frame = new JFrame("Simulator");
 		frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 		// Window default size
-		frame.setSize(850, 900);
+		frame.setSize(750, 700);
 		// Layout of grid
 		frame.setLayout(new BorderLayout());
 
@@ -237,7 +244,6 @@ public class SimulatorLayer
 			}
 		});
 
-		System.out.println("car pos " + car.getLocation());
 		
 		frame.setVisible(true);
 	}
@@ -253,49 +259,66 @@ public class SimulatorLayer
 		}
 		return null;
 	}
-
-	boolean is_visited[] = {false,false,false,false,false};
-	int index = 0;
+	
 	ActionListener taskPerformer = new ActionListener()
 	{
+
+		// TODO: clean up
+		//boolean is_visited[] = {false,false,false,false,false};
+		int index = 1;
+		
+		ImagePanel car_ghost;
+
 		public void actionPerformed(ActionEvent evt)
 		{
-			//car.setLocation(car.getBounds().x, car.getBounds().y - size_y - margin_y);
+			car_ghost = new ImagePanel(car);
 			
-			if(!is_visited[index])
+			if(!positions.get(index).visited)
 			{
-				if(moveToPosition(obstacles.get(index)))
+				if(moveToPosition(positions.get(index)))
 				{
-					is_visited[index] = true;
-					if(index+1<obstacles.size())
+					positions.get(index).visited = true;
+					if(index<positions.size())
 						index++;
+					return;
 				}
 			}
 			
-			//moveToPosition(obstacles.get(0));
+			/*moveToPosition(obstacles.get(0));
+			
+			System.out.println(index);
+			System.out.println("car pos " + car.getLocation());
+			System.out.println("car ghost " + car_ghost.getLocation());
+			index++;
+			*/
 			
 			frame.repaint();
 		}
 	};
-	
+
 	boolean moveToPosition(Position target)
 	{
 		int x = 0, y = 0;
-		if(target.x > Math.floor(car.getLocation().x/(size_x + margin_x)))
+		double theta = 0.0;
+		if(Math.floor(target.x) > Math.floor(car.getLocation().x/(size_x + margin_x)))
 		{
 			x = size_x + margin_x;
+			theta = Math.PI/2;
 		}
-		else if((target.x < Math.floor(car.getLocation().x/(size_x + margin_x))))
+		else if(Math.floor(target.x) < Math.floor(car.getLocation().x/(size_x + margin_x)))
 		{
 			x = -( size_x + margin_x);
+			theta = -Math.PI/2;
 		}
-		else if(target.y < Math.floor(17 - (car.getLocation().y/(size_y + margin_y))))
+		else if(Math.floor(target.y) < Math.floor(17 - (car.getLocation().y/(size_y + margin_y))))
 		{
 			y = size_y + margin_y;
+			theta = -Math.PI;
 		}
-		else if(target.y > Math.floor(17 - (car.getLocation().y/(size_y + margin_y))))
+		else if(Math.floor(target.y) > Math.floor(17 - (car.getLocation().y/(size_y + margin_y))))
 		{
 			y = -(size_y + margin_y);
+			theta = 0.0;
 		}
 		else
 		{
@@ -303,13 +326,79 @@ public class SimulatorLayer
 		}
 		
 		car.setLocation(car.getBounds().x + x, car.getBounds().y + y);
+		car.theta = theta;
 		return false;
+	}
+	
+	boolean checkForDirection(Position target)
+	{
+		
+		switch(target.orientation)
+		{
+		case NORTH:
+			
+			// car facing NORTH
+			if(car.theta == 0.0)
+			{
+				
+			}
+			// car facing SOUTH
+			else if(car.theta == Math.PI)
+			{
+				
+			}
+			
+			break;
+		case EAST:
+			break;
+		case SOUTH:
+			
+			// car facing NORTH
+			if(car.theta == 0.0)
+			{
+				
+			}
+			// car facing SOUTH
+			else if(car.theta == Math.PI)
+			{
+				
+			}
+			break;
+		case WEST:
+			break;
+		default:
+			break;
+		}
+		
+		return false;
+	}
+	
+	void movementForOppositeDirection(Position target)
+	{
+		if(Math.floor(target.x) > Math.floor(car.getLocation().x/(size_x + margin_x)))
+		{
+			
+		}
+		else if(Math.floor(target.x) < Math.floor(car.getLocation().x/(size_x + margin_x)))
+		{
+			
+		}
+		else
+			moveToPosition(target);
 	}
 	
 	public void runSimulation()
 	{
 		HamiltonianPathSimulator h = new HamiltonianPathSimulator(obstacles);
 		positions = h.getCarPositions();
+
+		for(CarPosition wp : positions)
+		{
+			wp.setvisited(false);
+		}
+		
+		// pre-planning of turning path
+		
 		System.out.println(positions);
 		Timer timer = new Timer(delay, taskPerformer);
 		timer.start();

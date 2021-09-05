@@ -31,13 +31,13 @@ public class CarPosition extends Position
 		else if (orientation == Orientation.NORTH)
 		{
 			this.x = x -1;
-			this.y = y + 1.5;
+			this.y = y + 2.5;
 			car_facing = -(Math.PI) / 2;
 			visited = false;
 		}
 		else if (orientation == Orientation.EAST)
 		{
-			this.x = x + 1.5;
+			this.x = x + 2.5;
 			this.y = y - 1;
 			car_facing = Math.PI;
 			visited = false;
