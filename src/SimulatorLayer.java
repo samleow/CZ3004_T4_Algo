@@ -26,7 +26,7 @@ import src.Position.Orientation;
 public class SimulatorLayer
 {
 	// Timer delay
-	int delay = 500;
+	int delay = 300;
 	int size_x = 29, size_y = 29;
 	int margin_x = 1, margin_y = 1;
 	// Nested List of Panels as a grid
@@ -271,6 +271,9 @@ public class SimulatorLayer
 
 		public void actionPerformed(ActionEvent evt)
 		{
+			if(index>=positions.size())
+				return;
+			
 			car_ghost = new ImagePanel(car);
 			
 			if(!positions.get(index).visited)
