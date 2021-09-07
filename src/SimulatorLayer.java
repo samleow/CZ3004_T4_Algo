@@ -57,6 +57,67 @@ public class SimulatorLayer
 			this.setBounds(imgpnl.getBounds());
 			this.img = imgpnl.img;
 		}
+		
+		public Orientation getOrientation()
+		{
+			if(theta == 0.0)
+				return Orientation.NORTH;
+			else if(theta == Math.PI/2)
+				return Orientation.EAST;
+			else if(theta == -Math.PI/2)
+				return Orientation.WEST;
+			else if(theta == Math.PI)
+				return Orientation.SOUTH;
+			else if(theta == -Math.PI)
+			{
+				theta = Math.PI;
+				return Orientation.SOUTH;
+			}
+			else return null;
+		}
+		
+		public void setOrientation(Orientation dir)
+		{
+			switch(dir)
+			{
+				case NORTH:
+					theta = 0.0;
+					break;
+				case EAST:
+					theta = Math.PI/2;
+					break;
+				case WEST:
+					theta = -Math.PI/2;
+					break;
+				case SOUTH:
+					theta = Math.PI;
+					break;
+				default:
+					break;
+			}
+		}
+		
+		// overload
+		public void setOrientation(int dir)
+		{
+			switch(dir)
+			{
+				case 0:
+					theta = 0.0;
+					break;
+				case 1:
+					theta = Math.PI/2;
+					break;
+				case 2:
+					theta = -Math.PI/2;
+					break;
+				case 3:
+					theta = Math.PI;
+					break;
+				default:
+					break;
+			}
+		}
 
 		@Override
 		public void paintComponent(Graphics g)
@@ -283,7 +344,7 @@ public class SimulatorLayer
 					positions.get(index).visited = true;
 					if(index<positions.size())
 						index++;
-					return;
+					//return;
 				}
 			}
 			
@@ -298,26 +359,32 @@ public class SimulatorLayer
 			frame.repaint();
 		}
 	};
-
+	
+	// returns true if reached target position
+	// else returns false
 	boolean moveToPosition(Position target)
 	{
 		int x = 0, y = 0;
 		double theta = 0.0;
+		// move right
 		if(Math.floor(target.x) > Math.floor(car.getLocation().x/(size_x + margin_x)))
 		{
 			x = size_x + margin_x;
 			theta = Math.PI/2;
 		}
+		// move left
 		else if(Math.floor(target.x) < Math.floor(car.getLocation().x/(size_x + margin_x)))
 		{
 			x = -( size_x + margin_x);
 			theta = -Math.PI/2;
 		}
+		// move down
 		else if(Math.floor(target.y) < Math.floor(17 - (car.getLocation().y/(size_y + margin_y))))
 		{
 			y = size_y + margin_y;
-			theta = -Math.PI;
+			theta = Math.PI;
 		}
+		// move up
 		else if(Math.floor(target.y) > Math.floor(17 - (car.getLocation().y/(size_y + margin_y))))
 		{
 			y = -(size_y + margin_y);
@@ -325,6 +392,8 @@ public class SimulatorLayer
 		}
 		else
 		{
+			// reached target
+			car.setOrientation(Math.abs(3-target.orientation.ordinal()));
 			return true;
 		}
 		
@@ -333,9 +402,13 @@ public class SimulatorLayer
 		return false;
 	}
 	
-	boolean checkForDirection(Position target)
+	// -1 == error
+	//  0 == same direction
+	//  1 == opposite direction
+	//  2 == facing perpendicular (might need to split)
+	int checkForDirection(Position target)
 	{
-		
+		/* // old code
 		switch(target.orientation)
 		{
 		case NORTH:
@@ -348,6 +421,7 @@ public class SimulatorLayer
 			// car facing SOUTH
 			else if(car.theta == Math.PI)
 			{
+				// Opposite direction
 				
 			}
 			
@@ -359,6 +433,7 @@ public class SimulatorLayer
 			// car facing NORTH
 			if(car.theta == 0.0)
 			{
+				// Opposite direction
 				
 			}
 			// car facing SOUTH
@@ -372,8 +447,31 @@ public class SimulatorLayer
 		default:
 			break;
 		}
+		*/
 		
-		return false;
+		if(car.getOrientation() == null)
+		{
+			// car not oriented properly
+			return -1;
+		}
+		
+		if(target.orientation == car.getOrientation())
+		{
+			// Same direction
+			return 0;
+		}
+		else if(target.orientation.ordinal() + car.getOrientation().ordinal() == 3)
+		{
+			// Opposite direction
+			return 1;
+		}
+		else
+		{
+			// facing perpendicular
+			// might need to split based on direction
+			return 2;
+		}
+		
 	}
 	
 	void movementForOppositeDirection(Position target)
