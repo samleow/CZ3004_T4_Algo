@@ -8,6 +8,7 @@ import java.awt.Graphics;
 import java.awt.Graphics2D;
 import java.awt.GridLayout;
 import java.awt.Image;
+import java.awt.Point;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.io.IOException;
@@ -117,6 +118,11 @@ public class SimulatorLayer
 				default:
 					break;
 			}
+		}
+		
+		public Point getGridLocation()
+		{			
+			return new Point((int)Math.floor(this.getX()/(size_x+margin_x)), (int)Math.floor(this.getY()/(size_y+margin_y)));
 		}
 
 		@Override
@@ -468,24 +474,109 @@ public class SimulatorLayer
 		else
 		{
 			// facing perpendicular
-			// might need to split based on direction
+			// might need to split based on direction (pos/ neg theta)
 			return 2;
 		}
 		
 	}
 	
+	// Scenarios: (based on directional vector)
+	// a:	direction along axis (straight line)
+	// b:	forward left/ right
+	// c:	backwards left/ right
 	void movementForOppositeDirection(Position target)
 	{
-		if(Math.floor(target.x) > Math.floor(car.getLocation().x/(size_x + margin_x)))
+		Point car_gl = car.getGridLocation();
+		// vector from car to target
+		car_gl.x = (int)Math.floor(target.x - car_gl.x);
+		car_gl.y = (int)Math.floor(target.y - car_gl.y);
+		
+		if(car_gl.x == 0 || car_gl.y == 0)
 		{
-			
+			// Scenario a
+			System.out.println(" ~ ~ Scenario a");
+			return;
 		}
-		else if(Math.floor(target.x) < Math.floor(car.getLocation().x/(size_x + margin_x)))
+		
+		switch(car.getOrientation())
 		{
-			
+			case NORTH:
+				
+				// forward
+				if(car_gl.y < 0)
+				{
+					// Scenario b
+					System.out.println(" ~ ~ Scenario b");
+					
+				}
+				// backward
+				else
+				{
+					// Scenario c
+					System.out.println(" ~ ~ Scenario c");
+					
+				}
+				
+				break;
+			case EAST:
+				
+				// forward
+				if(car_gl.x > 0)
+				{
+					// Scenario b
+					System.out.println(" ~ ~ Scenario b");
+					
+				}
+				// backward
+				else
+				{
+					// Scenario c
+					System.out.println(" ~ ~ Scenario c");
+					
+				}
+				
+				break;
+			case WEST:
+				
+				// forward
+				if(car_gl.x < 0)
+				{
+					// Scenario b
+					System.out.println(" ~ ~ Scenario b");
+					
+				}
+				// backward
+				else
+				{
+					// Scenario c
+					System.out.println(" ~ ~ Scenario c");
+					
+				}
+				
+				break;
+			case SOUTH:
+				
+				// forward
+				if(car_gl.y > 0)
+				{
+					// Scenario b
+					System.out.println(" ~ ~ Scenario b");
+					
+				}
+				// backward
+				else
+				{
+					// Scenario c
+					System.out.println(" ~ ~ Scenario c");
+					
+				}
+				
+				break;
+			default:
+				System.out.println("Car is not oriented properly!");
+				break;
 		}
-		else
-			moveToPosition(target);
+		
 	}
 	
 	public void runSimulation()
@@ -500,7 +591,17 @@ public class SimulatorLayer
 		
 		// pre-planning of turning path
 		
+		// debugging
+		/*
 		System.out.println(positions);
+		
+		Position test_p = new Position(-5,10,Orientation.WEST);
+		System.out.println(" ~ ~ Car grid pos: " + car.getGridLocation());
+		System.out.println(" ~ ~ Target grid pos: " + test_p);
+		System.out.println(" ~ ~ Direction check: " + checkForDirection(test_p));
+		movementForOppositeDirection(test_p);
+		*/
+		
 		Timer timer = new Timer(delay, taskPerformer);
 		timer.start();
 	}
