@@ -28,8 +28,11 @@ public class SimulatorLayer
 {
 	// Timer delay
 	int delay = 300;
+	// Grid pixel sizes
 	int size_x = 29, size_y = 29;
 	int margin_x = 1, margin_y = 1;
+	// Robot car's rotation radius
+	double rot_radius = 2.5;
 	// Nested List of Panels as a grid
 	// Grid position based on grid.get(y).get(x)
 	private List<List<ImagePanel>> grid = new ArrayList<>();
@@ -334,14 +337,14 @@ public class SimulatorLayer
 		//boolean is_visited[] = {false,false,false,false,false};
 		int index = 1;
 		
-		ImagePanel car_ghost;
+		//ImagePanel car_ghost;
 
 		public void actionPerformed(ActionEvent evt)
 		{
 			if(index>=positions.size())
 				return;
 			
-			car_ghost = new ImagePanel(car);
+			//car_ghost = new ImagePanel(car);
 			
 			if(!positions.get(index).visited)
 			{
@@ -501,7 +504,6 @@ public class SimulatorLayer
 		switch(car.getOrientation())
 		{
 			case NORTH:
-				
 				// forward
 				if(car_gl.y < 0)
 				{
@@ -516,10 +518,8 @@ public class SimulatorLayer
 					System.out.println(" ~ ~ Scenario c");
 					
 				}
-				
 				break;
 			case EAST:
-				
 				// forward
 				if(car_gl.x > 0)
 				{
@@ -534,10 +534,8 @@ public class SimulatorLayer
 					System.out.println(" ~ ~ Scenario c");
 					
 				}
-				
 				break;
 			case WEST:
-				
 				// forward
 				if(car_gl.x < 0)
 				{
@@ -552,10 +550,8 @@ public class SimulatorLayer
 					System.out.println(" ~ ~ Scenario c");
 					
 				}
-				
 				break;
 			case SOUTH:
-				
 				// forward
 				if(car_gl.y > 0)
 				{
@@ -570,13 +566,78 @@ public class SimulatorLayer
 					System.out.println(" ~ ~ Scenario c");
 					
 				}
-				
 				break;
 			default:
 				System.out.println("Car is not oriented properly!");
 				break;
 		}
 		
+	}
+	
+	// moves car to position after rotation
+	void rotateBy90(boolean left_dir)
+	{
+		switch(car.getOrientation())
+		{
+			case NORTH:
+				if(left_dir)
+				{
+					car.setLocation(car.getBounds().x - (int)Math.floor(rot_radius*(size_x+margin_x)),
+							car.getBounds().y - (int)Math.floor(rot_radius*(size_y+margin_y)));
+					car.theta = -Math.PI/2;
+				}
+				else
+				{
+					car.setLocation(car.getBounds().x + (int)Math.floor(rot_radius*(size_x+margin_x)),
+							car.getBounds().y - (int)Math.floor(rot_radius*(size_y+margin_y)));
+					car.theta = Math.PI/2;
+				}
+				break;
+			case EAST:
+				if(left_dir)
+				{
+					car.setLocation(car.getBounds().x + (int)Math.floor(rot_radius*(size_x+margin_x)),
+							car.getBounds().y - (int)Math.floor(rot_radius*(size_y+margin_y)));
+					car.theta = 0.0;
+				}
+				else
+				{
+					car.setLocation(car.getBounds().x + (int)Math.floor(rot_radius*(size_x+margin_x)),
+							car.getBounds().y + (int)Math.floor(rot_radius*(size_y+margin_y)));
+					car.theta = Math.PI;
+				}
+				break;
+			case WEST:
+				if(left_dir)
+				{
+					car.setLocation(car.getBounds().x - (int)Math.floor(rot_radius*(size_x+margin_x)),
+							car.getBounds().y + (int)Math.floor(rot_radius*(size_y+margin_y)));
+					car.theta = Math.PI;
+				}
+				else
+				{
+					car.setLocation(car.getBounds().x - (int)Math.floor(rot_radius*(size_x+margin_x)),
+							car.getBounds().y - (int)Math.floor(rot_radius*(size_y+margin_y)));
+					car.theta = 0.0;
+				}
+				break;
+			case SOUTH:
+				if(left_dir)
+				{
+					car.setLocation(car.getBounds().x + (int)Math.floor(rot_radius*(size_x+margin_x)),
+							car.getBounds().y + (int)Math.floor(rot_radius*(size_y+margin_y)));
+					car.theta = Math.PI/2;
+				}
+				else
+				{
+					car.setLocation(car.getBounds().x - (int)Math.floor(rot_radius*(size_x+margin_x)),
+							car.getBounds().y + (int)Math.floor(rot_radius*(size_y+margin_y)));
+					car.theta = -Math.PI/2;
+				}
+				break;
+			default:
+				break;
+		}
 	}
 	
 	public void runSimulation()
@@ -601,6 +662,9 @@ public class SimulatorLayer
 		System.out.println(" ~ ~ Direction check: " + checkForDirection(test_p));
 		movementForOppositeDirection(test_p);
 		*/
+		
+		//rotateBy90(false);
+		//frame.repaint();
 		
 		Timer timer = new Timer(delay, taskPerformer);
 		timer.start();
