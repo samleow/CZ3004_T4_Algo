@@ -1,4 +1,5 @@
 package src.AStar;
+import java.util.ArrayList;
 //referenced from https://stackabuse.com/graphs-in-java-a-star-algorithm/
 import java.util.List;
 
@@ -14,10 +15,24 @@ public class Node implements Comparable<Node>{
     public double g = Double.MAX_VALUE;
 
     public double h;
-
-    Node(double h){
+    
+    public Vector2D pos;
+    
+    Node()
+    {
+    	this.h = 0.0;
+    	this.pos = new Vector2D();
+    	this.id = idCounter++;
+        
+        this.neighbours = new ArrayList<Edge>();
+    }
+    
+    Node(double h, Vector2D pos){
         this.h = h;
+        this.pos = pos;
+        // might not need if pos is key
         this.id = idCounter++;
+        
         this.neighbours = new ArrayList<Edge>();
     }
 

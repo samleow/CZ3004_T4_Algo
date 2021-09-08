@@ -8,8 +8,14 @@ import java.util.Scanner;
 import src.Position.Orientation;
 
 public class readinput{
+	
     public readinput(){
-        try{
+    	
+    }
+    
+    public List<Position> getObstacles()
+    {
+    	try{
             File input = new File("src/input.txt"); //specify relative to src folder
             Scanner inputreader = new Scanner(input);
             List<Position> obstacles = new ArrayList<Position>(); 
@@ -35,7 +41,9 @@ public class readinput{
                 }
                     
             }
-            SimulatorLayer s = new SimulatorLayer(obstacles);
+            
+            return obstacles;
+            //SimulatorLayer s = new SimulatorLayer(obstacles);
             /*for (Position ac:obstacles)
             {
                 System.out.println(ac.toString());
@@ -44,12 +52,12 @@ public class readinput{
             System.out.println("An error has occurred.");
             e.printStackTrace();
         }
+    	return null;
     }
 
     public static void main (String args[])
     {
-        readinput a = new readinput();
-        
+    	SimulatorLayer s  = new SimulatorLayer(new readinput().getObstacles());
     }
 
 }

@@ -338,7 +338,7 @@ public class SimulatorLayer
 		int index = 1;
 		
 		//ImagePanel car_ghost;
-
+		
 		public void actionPerformed(ActionEvent evt)
 		{
 			if(index>=positions.size())
@@ -347,7 +347,7 @@ public class SimulatorLayer
 			//car_ghost = new ImagePanel(car);
 			
 			if(!positions.get(index).visited)
-			{
+			{				
 				if(moveToPosition(positions.get(index)))
 				{
 					positions.get(index).visited = true;
@@ -369,6 +369,26 @@ public class SimulatorLayer
 		}
 	};
 	
+	// checks collision for a single block of movement
+	//		if can need check for multiple blocks of movement
+	// direction : direction the car is moving to
+	// return 0 if no collision
+	// return 1 if path on "left" is clear
+	// return 2 if path on "right" is clear
+	// TODO
+	int checkCollision(Orientation direction, Position target)
+	{
+		// collision check of target on original path
+		
+		// if have collision, collision check on altered path
+		// maybe can use recursive
+		for(Position obs: obstacles)
+		{
+			
+		}
+		return 0;
+	}
+	
 	// returns true if reached target position
 	// else returns false
 	boolean moveToPosition(Position target)
@@ -378,8 +398,28 @@ public class SimulatorLayer
 		// move right
 		if(Math.floor(target.x) > Math.floor(car.getLocation().x/(size_x + margin_x)))
 		{
-			x = size_x + margin_x;
-			theta = Math.PI/2;
+			int c = 0;
+			for(Position obs: obstacles)
+			{
+				c = checkCollision(Orientation.EAST, obs);
+			}
+			
+			// avoidance
+			switch(c)
+			{
+				// left clear
+				case 1:
+					break;
+				// right clear
+				case 2:
+					break;
+				// no collision
+				default:
+					x = size_x + margin_x;
+					theta = Math.PI/2;
+					break;
+			}
+			
 		}
 		// move left
 		else if(Math.floor(target.x) < Math.floor(car.getLocation().x/(size_x + margin_x)))
