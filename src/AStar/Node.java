@@ -1,5 +1,5 @@
 package src.AStar;
-
+//referenced from https://stackabuse.com/graphs-in-java-a-star-algorithm/
 import java.util.List;
 
 public class Node implements Comparable<Node>{
