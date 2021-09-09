@@ -4,7 +4,9 @@ import java.util.ArrayList;
 import java.util.List;
 
 import src.CarPosition;
+import src.Position;
 import src.AStar.AStar;
+import src.AStar.Node;
 import src.rework.Command.CommandType;
 
 public class Robot extends SimObject
@@ -15,10 +17,13 @@ public class Robot extends SimObject
 	public int[][] barrier = new int[500][2];
 	
 	List<CarPosition> waypoints = null;
+	public List<Position> obstacles = null;
 	List<Command> commands = new ArrayList<Command>();
+	List<Node> path = null;
 	
 	int current_wp = 0;
 	int current_command = 0;
+	int current_path = 0;
 	
 	private Robot()
 	{
@@ -55,32 +60,38 @@ public class Robot extends SimObject
 			{
 				for (int k= 0; k<3; k++)
 				{
-					if ((int)obstacles.get(i).x+j< 20 && (int)obstacles.get(i).x-j> 0 && (int)obstacles.get(i).y+k< 20 && (int)obstacles.get(i).y-k> 0)
+					if ((int)obstacles.get(i).getX()+j< 20 && (int)obstacles.get(i).getX()-j> 0 && (int)obstacles.get(i).getY()+k< 20 && (int)obstacles.get(i).getY()-k> 0)
 					{
-						barrier[counter][0] = (int)obstacles.get(i).x + j;
-						barrier[counter][1] = (int)obstacles.get(i).y + k;
+						barrier[counter][0] = (int)obstacles.get(i).getX() + j;
+						barrier[counter][1] = (int)obstacles.get(i).getY() + k;
 						counter++;
-						barrier[counter][0] = (int)obstacles.get(i).x - j;
-						barrier[counter][1] = (int)obstacles.get(i).y - k;
+						barrier[counter][0] = (int)obstacles.get(i).getX() - j;
+						barrier[counter][1] = (int)obstacles.get(i).getY() - k;
 						counter++;
-						barrier[counter][0] = (int)obstacles.get(i).x + j;
-						barrier[counter][1] = (int)obstacles.get(i).y - k;
+						barrier[counter][0] = (int)obstacles.get(i).getX() + j;
+						barrier[counter][1] = (int)obstacles.get(i).getY() - k;
 						counter++;
-						barrier[counter][0] = (int)obstacles.get(i).x - j;
-						barrier[counter][1] = (int)obstacles.get(i).y + k;
+						barrier[counter][0] = (int)obstacles.get(i).getX() - j;
+						barrier[counter][1] = (int)obstacles.get(i).getY() + k;
 						counter++;
 					}
 				}
 			}
 		}
 		
-		for (int i =0; i<positions.size()-1; i++)
+		path = new ArrayList<Node>();
+		for (int i =0; i<waypoints.size()-1; i++)
 		{
-			AStar astar = new AStar(20, 20, (int)positions.get(i).x, (int)positions.get(i).y, (int)positions.get(i+1).x, (int)positions.get(i+1).y, barrier);
+			AStar astar = new AStar(20, 20, (int)waypoints.get(i).getX(), (int)waypoints.get(i).getY(), (int)waypoints.get(i+1).getX(), (int)waypoints.get(i+1).getY(), barrier);
 			astar.display();
 			astar.process();
 			astar.displaySolution();
+			path.add(astar.getSolutionNode());
 		}
+		
+		generateCommands(path.get(current_path));
+		
+		/*
 		commands.add(new Command(CommandType.MOVE, SimulatorS.getBlockSize()));
 		commands.add(new Command(CommandType.MOVE, SimulatorS.getBlockSize()));
 		commands.add(new Command(CommandType.MOVE, SimulatorS.getBlockSize()));
@@ -90,6 +101,77 @@ public class Robot extends SimObject
 		commands.add(new Command(CommandType.TURN, Math.PI/2));
 		commands.add(new Command(CommandType.MOVE, SimulatorS.getBlockSize()));
 		commands.add(new Command(CommandType.MOVE, SimulatorS.getBlockSize()));
+		*/
+	}
+	
+	void generateCommands(Node node)
+	{
+		commands = null;
+		commands = new ArrayList<Command>();
+		double curr_dir = 0.0, prev_dir = 0.0;
+		
+		while(node.parent != null)
+		{
+			curr_dir = getNodeDirection(node, node.parent);
+			// problem here
+			// might need to iterate backwards
+			// TODO:
+			if(node.parent.parent != null)
+				prev_dir = getNodeDirection(node.parent, node.parent.parent);
+			else
+				prev_dir = 0.0;
+			
+			generateTurnCommands(curr_dir, prev_dir);
+			commands.add(0, new Command(CommandType.MOVE, SimulatorS.getBlockSize()));
+			node = node.parent;
+		}
+	}
+	
+	double getNodeDirection(Node curr, Node prev)
+	{
+		double dir = 0.0;
+		// move west
+		if(curr.i < prev.i)
+		{
+			dir = Math.PI;
+		}
+		// move east
+		else if(curr.i > prev.i)
+		{
+			dir = 0.0;
+		}
+		// move north
+		else if(curr.j > prev.j)
+		{
+			dir = Math.PI/2;
+		}
+		// move south
+		else if(curr.j > prev.j)
+		{
+			dir = -Math.PI/2;
+		}
+		
+		return dir;
+	}
+	
+	void generateTurnCommands(double target_dir, double prev_dir)
+	{
+		if(target_dir == prev_dir)
+			return;
+		
+		if(Math.abs(target_dir - prev_dir) == Math.PI)
+		{
+			commands.add(0, new Command(CommandType.TURN, Math.PI/2));
+			commands.add(0, new Command(CommandType.TURN, Math.PI/2));
+		}		
+		else if(Math.abs(target_dir - prev_dir) < Math.PI)
+		{
+			if(target_dir-prev_dir < 0)
+				commands.add(0, new Command(CommandType.TURN, -Math.PI/2));
+			else
+				commands.add(0, new Command(CommandType.TURN, Math.PI/2));
+			
+		}
 	}
 	
 	public void update()
@@ -103,6 +185,9 @@ public class Robot extends SimObject
 		
 		// movement update here
 		// must be based on delta time
+		if(commands == null || commands.size() == 0)
+			return;
+		
 		Command currCmd = commands.get(current_command);
 		
 		switch(currCmd.command_type)

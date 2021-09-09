@@ -167,6 +167,14 @@ public class AStar
                 System.out.println("No possible Path");
 
         }
+        public Node getSolutionNode()
+        {
+            if(closedCells[endI][endJ])
+                return grid[endI][endJ];
+            else
+                System.out.println("No possible Path");
+            return null;
+        }
         public static void main(String[] args){
             AStar astar = new AStar(5, 5, 0, 0, 3, 2, new int[][]{
                 {0,4},{2,2},{3,1},{3,3},{2,1},{2,3}

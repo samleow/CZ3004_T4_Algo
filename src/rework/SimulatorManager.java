@@ -58,6 +58,8 @@ public class SimulatorManager extends JPanel
 			wp.setvisited(false);
 		}*/
 		
+		robot.obstacles = obs;
+		
 		for(Position o : obs)
 		{
 			obstacles.add(new Obstacle(o.getX()*block_size, o.getY()*block_size, block_size, block_size, o.getDirection()));
