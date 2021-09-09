@@ -43,6 +43,10 @@ public class AStar
         }
     }
         public void addBlocksOnCell(int i, int j){
+            if (i <3 && j<3)
+            {
+                return;
+            }
             grid[i][j] = null;
         }
         public void startNode(int i, int j){

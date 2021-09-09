@@ -811,6 +811,8 @@ public class SimulatorLayer
 		{
 			AStar astar = new AStar(20, 20, (int)positions.get(i).x, (int)positions.get(i).y, (int)positions.get(i+1).x, (int)positions.get(i+1).y, barrier);
 			astar.display();
+			astar.process();
+			astar.displaySolution();
 		}
 		
 		for(CarPosition wp : positions)
