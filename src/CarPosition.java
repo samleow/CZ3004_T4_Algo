@@ -19,33 +19,37 @@ public class CarPosition extends Position
 		}
 
 	}
-	public void SimulatorCarPosition(double x, double y, Orientation orientation) //reference bottom left corner 
+	public void SimulatorCarPosition(double x, double y, Orientation orientation) //reference top left corner 
 	{
+		//car facing upwards
 		if (orientation == Orientation.SOUTH)
 		{
 			this.x = x - 1;
-			this.y = y - 4.5;
+			this.y = y - 2;
 			car_facing = (Math.PI) / 2;
 			visited = false;
 		}
+		//car facing downwards
 		else if (orientation == Orientation.NORTH)
 		{
-			this.x = x -1;
-			this.y = y + 2.5;
+			this.x = x - 1;
+			this.y = y + 6;
 			car_facing = -(Math.PI) / 2;
 			visited = false;
 		}
+		//car facing left
 		else if (orientation == Orientation.EAST)
 		{
-			this.x = x + 2.5;
-			this.y = y - 1;
+			this.x = x + 3;
+			this.y = y + 2;
 			car_facing = Math.PI;
 			visited = false;
 		}
+		//car facing right
 		else if (orientation == Orientation.WEST)
 		{
-			this.x = x - 4.5;
-			this.y = y - 1;
+			this.x = x - 5;
+			this.y = y + 2;
 			car_facing = 0.0;
 			visited = false;
 		}

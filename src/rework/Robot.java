@@ -4,6 +4,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import src.CarPosition;
+import src.AStar.AStar;
 import src.rework.Command.CommandType;
 
 public class Robot extends SimObject
@@ -11,6 +12,7 @@ public class Robot extends SimObject
 	// Might need to store list of commands here
 
 	private static Robot _instance = null;
+	public int[][] barrier = new int[500][2];
 	
 	List<CarPosition> waypoints = null;
 	List<Command> commands = new ArrayList<Command>();
@@ -46,6 +48,39 @@ public class Robot extends SimObject
 		// when reached waypoint, current_wp++
 		
 		// create commands
+		int counter = 0;
+		for (int i=0;i<obstacles.size();i++)
+		{
+			for (int j=0; j<3;j++)
+			{
+				for (int k= 0; k<3; k++)
+				{
+					if ((int)obstacles.get(i).x+j< 20 && (int)obstacles.get(i).x-j> 0 && (int)obstacles.get(i).y+k< 20 && (int)obstacles.get(i).y-k> 0)
+					{
+						barrier[counter][0] = (int)obstacles.get(i).x + j;
+						barrier[counter][1] = (int)obstacles.get(i).y + k;
+						counter++;
+						barrier[counter][0] = (int)obstacles.get(i).x - j;
+						barrier[counter][1] = (int)obstacles.get(i).y - k;
+						counter++;
+						barrier[counter][0] = (int)obstacles.get(i).x + j;
+						barrier[counter][1] = (int)obstacles.get(i).y - k;
+						counter++;
+						barrier[counter][0] = (int)obstacles.get(i).x - j;
+						barrier[counter][1] = (int)obstacles.get(i).y + k;
+						counter++;
+					}
+				}
+			}
+		}
+		
+		for (int i =0; i<positions.size()-1; i++)
+		{
+			AStar astar = new AStar(20, 20, (int)positions.get(i).x, (int)positions.get(i).y, (int)positions.get(i+1).x, (int)positions.get(i+1).y, barrier);
+			astar.display();
+			astar.process();
+			astar.displaySolution();
+		}
 		commands.add(new Command(CommandType.MOVE, SimulatorS.getBlockSize()));
 		commands.add(new Command(CommandType.MOVE, SimulatorS.getBlockSize()));
 		commands.add(new Command(CommandType.MOVE, SimulatorS.getBlockSize()));

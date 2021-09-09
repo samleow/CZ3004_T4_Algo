@@ -789,9 +789,9 @@ public class SimulatorLayer
 		int counter = 0;
 		for (int i=0;i<obstacles.size();i++)
 		{
-			for (int j=0; j<5;j++)
+			for (int j=0; j<4;j++)
 			{
-				for (int k= 0; k<5; k++)
+				for (int k= 0; k<4; k++)
 				{
 					if ((int)obstacles.get(i).x+j< 20 && (int)obstacles.get(i).x-j> 0 && (int)obstacles.get(i).y+k< 20 && (int)obstacles.get(i).y-k> 0)
 					{
@@ -800,6 +800,12 @@ public class SimulatorLayer
 						counter++;
 						barrier[counter][0] = (int)obstacles.get(i).x - j;
 						barrier[counter][1] = (int)obstacles.get(i).y - k;
+						counter++;
+						barrier[counter][0] = (int)obstacles.get(i).x + j;
+						barrier[counter][1] = (int)obstacles.get(i).y - k;
+						counter++;
+						barrier[counter][0] = (int)obstacles.get(i).x - j;
+						barrier[counter][1] = (int)obstacles.get(i).y + k;
 						counter++;
 					}
 				}
