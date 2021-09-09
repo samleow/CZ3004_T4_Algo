@@ -85,14 +85,7 @@ public class AStar
                 if (current.i -1 >= 0){
                     t = grid[current.i -1][current.j];
                     UpdateCostifNeeded(current, t, current.finalCost + v_h_cost);
-                    if (current.j -1 >= 0){
-                        t = grid[current.i -1][current.j -1];
-                        UpdateCostifNeeded(current, t, current.finalCost + diagonal_cost);
-                    }
-                    if (current.j + 1 < grid[0].length){
-                        t = grid[current.i -1][current.j +1];
-                        UpdateCostifNeeded(current, t, current.finalCost + diagonal_cost);
-                    }
+                    
                 }
                 if (current.j -1 >= 0){
                     t = grid[current.i][current.j -1];
@@ -106,14 +99,7 @@ public class AStar
                 if (current.i + 1 < grid.length){
                     t = grid[current.i +1][current.j];
                     UpdateCostifNeeded(current, t, current.finalCost + v_h_cost);
-                    if (current.j - 1 >= 0){
-                        t = grid[current.i +1][current.j -1];
-                        UpdateCostifNeeded(current, t, current.finalCost + diagonal_cost);
-                    }
-                    if (current.j + 1 < grid[0].length){
-                        t = grid[current.i +1][current.j +1];
-                        UpdateCostifNeeded(current, t, current.finalCost + diagonal_cost);
-                    }
+                    
                 }
             }
             }
@@ -122,14 +108,14 @@ public class AStar
             for (int i=0;i<grid.length;i++){
                 for (int j=0; j<grid[i].length;j++){
                     if (i == startI && j == startJ){
-                        System.out.print("SO  ");
+                        System.out.print("S  ");
                     }
                     else if (i == endI && j == endJ)
-                        System.out.print("EO  ");
+                        System.out.print("E  ");
                     else if (grid[i][j] != null)
                         System.out.printf("%-3d", 0);
                     else
-                        System.out.print("BL  ");
+                        System.out.print("B  ");
                     
                 }
                 System.out.println();
@@ -144,7 +130,7 @@ public class AStar
                     if (grid[i][j] !=null)
                         System.out.printf("%-3d", grid[i][j].finalCost);
                     else
-                        System.out.print("BL  ");
+                        System.out.print("B  ");
                 }System.out.println();
             }System.out.println();
         }
@@ -162,14 +148,14 @@ public class AStar
                 for (int i=0;i<grid.length;i++){
                     for (int j=0; j<grid[i].length;j++){
                         if (i == startI && j == startJ){
-                            System.out.print("SO  ");
+                            System.out.print("S  ");
                         }
                         else if (i == endI && j == endJ)
-                            System.out.print("EO  ");
+                            System.out.print("E  ");
                         else if (grid[i][j] != null)
                             System.out.printf("%-3s", grid[i][j].solution ? "X":"0");
                         else
-                            System.out.print("BL  ");
+                            System.out.print("B  ");
                         }System.out.println();
                 }System.out.println();
 
