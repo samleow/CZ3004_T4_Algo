@@ -16,18 +16,20 @@ import java.util.ArrayList;
 import java.util.List;
 
 import javax.imageio.ImageIO;
+import javax.lang.model.util.ElementScanner14;
 import javax.swing.JButton;
 import javax.swing.JFrame;
 import javax.swing.JLayeredPane;
 import javax.swing.JPanel;
 import javax.swing.Timer;
 
+import jdk.internal.agent.resources.agent;
 import src.Position.Orientation;
 
 public class SimulatorLayer
 {
 	// Timer delay
-	int delay = 300;
+	int delay = 500;
 	// Grid pixel sizes
 	int size_x = 29, size_y = 29;
 	int margin_x = 1, margin_y = 1;
@@ -38,7 +40,7 @@ public class SimulatorLayer
 	private List<List<ImagePanel>> grid = new ArrayList<>();
 	private List<Position> obstacles = new ArrayList<Position>();
 	private List<CarPosition> positions = new ArrayList<CarPosition>();
-
+	private String bypasspath = "\0";
 	private JFrame frame = null;
 	private ImagePanel car;
 
@@ -377,7 +379,7 @@ public class SimulatorLayer
 	// return 2 if path on collision while moving left
 	// return 3 if path on collision while moving up
 	// TODO
-	int checkCollision(Orientation direction, Position target)
+	int checkCollision(Orientation direction, Position target,double x, double y)
 	{
 		// collision check of target on original path
 		
@@ -387,11 +389,11 @@ public class SimulatorLayer
 		//{
 			
 		//}
-		double x = Math.floor(car.getLocation().x/(size_x + margin_x));
-		double y = Math.floor(17 - car.getLocation().y/(size_y + margin_y));
+		//double x = Math.floor(car.getLocation().x/(size_x + margin_x));
+		//double y = Math.floor(17 - car.getLocation().y/(size_y + margin_y));
 		if (direction == Orientation.EAST)
 		{
-			if (((x + 4)> target.x-2) && ((y>(target.y-2))&&(y<(target.y+6))))
+			if (((x + 4)> target.x-2) && ((y>(target.y-5))&&(y<(target.y+3))))
 			{
 				return 1;
 			}
@@ -399,19 +401,110 @@ public class SimulatorLayer
 		}
 		else if (direction == Orientation.WEST)
 		{
-			if(((x - 1)< target.x+2) && ((y>(target.y-2))&&(y<(target.y+6))))
+			if(((x - 1)< target.x+3) && ((y>(target.y-5))&&(y<(target.y+3))))
 			{
 				return 2;
 			}
 		}
 		else if (direction == Orientation.NORTH)
 		{
+			if(((y + 4)> target.y-2) && ((x>(target.x-5))&&(x<(target.x+3))))
+			{
+				return 3;
+			}
 		}
 		else if (direction == Orientation.SOUTH)
 		{
+			if(((y - 1)< target.y+3) && ((x>(target.x-5))&&(y<(target.y+3))))
+			{
+				return 4;
+			}
 		}
 
 		return 0;
+	}
+	int clearanceCheck(int c, double a, double b)
+	{
+		boolean obstructedleft = false;
+		boolean obstructedright = false;
+		double g =a;
+		double h = b;
+		int x = 0;
+		switch(c){
+			case 1:
+				for (int i = 0; i<4;i++)
+				{
+					for (Position obs: obstacles)
+					{
+						
+						x = checkCollision(Orientation.NORTH, obs, g, h);
+						if (x != 0)
+						{
+							obstructedleft = true;
+							break;
+						}
+					}
+					h++;
+				}
+				for (int i = 0; i<8;i++)
+				{
+					for (Position obs: obstacles)
+					{
+						x = checkCollision(Orientation.EAST, obs, g, h);
+						if (x != 0)
+						{
+							obstructedleft = true;
+							break;
+						}
+					}
+					g++;
+				}
+				if (obstructedleft == true)
+				{
+					for (int i = 0; i<5;i++)
+					{
+						for (Position obs: obstacles)
+						{
+							x = checkCollision(Orientation.SOUTH, obs, a, b);
+							if (x != 0)
+							{
+								obstructedright = true;
+								break;
+							}
+							b--;
+						}
+					}
+					for (int i = 0; i<8;i++)
+					{
+						for (Position obs: obstacles)
+						{
+							x = checkCollision(Orientation.EAST, obs, a, b);
+							if (x != 0)
+							{
+								obstructedright = true;
+								break;
+							}
+							a++;
+						}
+					}
+				}
+				if (obstructedleft != true)
+				{
+					return 1;
+				}
+					
+				else if (obstructedleft == true && obstructedright != true)
+				{
+					return 2;
+				}	
+				else 
+				{
+					return 3;
+				}
+		}
+		return c;
+		 
+
 	}
 	
 	// returns true if reached target position
@@ -420,94 +513,175 @@ public class SimulatorLayer
 	{
 		int x = 0, y = 0;
 		double theta = 0.0;
-		// move right
-		if(Math.floor(target.x) > Math.floor(car.getLocation().x/(size_x + margin_x)))
-		{
-			int c = 0;
-			
-			for(Position obs: obstacles)
-			{
-				c = checkCollision(Orientation.EAST, obs);
-				if (c==1)
-				{
-					//check clearance
-					break;
-				}
-			}
-			
-			// avoidance
-			switch(c)
-			{
-				// left clear
-				case 1:
-					y = -(size_y +margin_y); 
-					break;
-				// right clear
-				case 2:
-					y = size_y + margin_y;
-					break;
-				// no collision
-				default:
-					x = size_x + margin_x;
-					theta = Math.PI/2;
-					break;
-			}
-			
-		}
-		// move left
-		else if(Math.floor(target.x) < Math.floor(car.getLocation().x/(size_x + margin_x)))
-		{
-			int c = 0;
-			for(Position obs: obstacles)
-			{
-				c = checkCollision(Orientation.EAST, obs);
-				if (c==2)
-				{
-					//check clearance
-					break;
-				}
-			}
-			
-			// avoidance
-			switch(c)
-			{
-				// left clear
-				case 1:
-					y = -(size_y +margin_y); 
-					break;
-				// right clear
-				case 2:
-					y = size_y + margin_y;
-					break;
-				// no collision
-				default:
-					x = -( size_x + margin_x);
-					theta = -Math.PI/2;
-					break;
-			}
-			
-		}
-		// move down
-		else if(Math.floor(target.y) < Math.floor(17 - (car.getLocation().y/(size_y + margin_y))))
-		{
-			y = size_y + margin_y;
-			theta = Math.PI;
-		}
-		// move up
-		else if(Math.floor(target.y) > Math.floor(17 - (car.getLocation().y/(size_y + margin_y))))
-		{
-			y = -(size_y + margin_y);
-			theta = 0.0;
-		}
-		else
-		{
-			// reached target
-			car.setOrientation(Math.abs(3-target.orientation.ordinal()));
-			return true;
-		}
+		//double a = Math.floor(car.getLocation().x/(size_x + margin_x));
+		//double b = Math.floor(17 - car.getLocation().y/(size_y + margin_y));
+		int cleared = 0;
 		
+		int movement = 0;
+		if (bypasspath == "\0")
+		{
+			if(Math.floor(target.x) > Math.floor(car.getLocation().x/(size_x + margin_x)))
+			{
+				int c = 0;
+				double a = Math.floor(car.getLocation().x/(size_x + margin_x));
+				double b = Math.floor(17 - car.getLocation().y/(size_y + margin_y));
+				for(Position obs: obstacles)
+				{
+					c = checkCollision(Orientation.EAST, obs, a, b);
+					if (c==1)
+					{
+						cleared = clearanceCheck(c,a,b);
+						break;
+					}
+				}
+				
+				// avoidance
+				switch(cleared)
+				{
+					// left clear
+					case 1:
+						y = -(size_y +margin_y); //find a way to do this one shot
+						bypasspath.replace("\0", "LLL") ;
+						movement = 0;
+						break;
+					// right clear
+					case 2:
+						y = size_y + margin_y; //find a way to do this one shot
+						bypasspath = "RR";
+						movement = 0;
+						break;
+					// no collision
+					default:
+						x = size_x + margin_x;
+						theta = Math.PI/2;
+						break;
+				}
+				
+			}
+			// move left
+			else if(Math.floor(target.x) < Math.floor(car.getLocation().x/(size_x + margin_x)))
+			{
+				int c = 0;
+				double a = Math.floor(car.getLocation().x/(size_x + margin_x));
+				double b = Math.floor(17 - car.getLocation().y/(size_y + margin_y));
+				for(Position obs: obstacles)
+				{
+					c = checkCollision(Orientation.WEST, obs, a, b);
+					if (c==2)
+					{
+						//check clearance
+						break;
+					}
+				}
+				
+				// avoidance
+				switch(c)
+				{
+					// left clear
+					case 1:
+						y = -(size_y +margin_y); 
+						break;
+					// right clear
+					case 2:
+						y = size_y + margin_y;
+						break;
+					// no collision
+					default:
+						x = -( size_x + margin_x);
+						theta = -Math.PI/2;
+						break;
+				}
+				
+			}
+			// move down
+			else if(Math.floor(target.y) < Math.floor(17 - (car.getLocation().y/(size_y + margin_y))))
+			{
+				int c = 0;
+				double a = Math.floor(car.getLocation().x/(size_x + margin_x));
+				double b = Math.floor(17 - car.getLocation().y/(size_y + margin_y));
+				for(Position obs: obstacles)
+				{
+					c = checkCollision(Orientation.SOUTH, obs, a, b);
+					if (c==3)
+					{
+						//check clearance
+						break;
+					}
+				}
+				
+				// avoidance
+				switch(c)
+				{
+					// left clear
+					case 1:
+						y = -(size_y +margin_y); 
+						break;
+					// right clear
+					case 2:
+						y = size_y + margin_y;
+						break;
+					// no collision
+					default:
+						y = size_y + margin_y;
+						theta = Math.PI;
+						break;
+				}
+				
+			}
+			// move up
+			else if(Math.floor(target.y) > Math.floor(17 - (car.getLocation().y/(size_y + margin_y))))
+			{
+				int c = 0;
+				double a = Math.floor(car.getLocation().x/(size_x + margin_x));
+				double b = Math.floor(17 - car.getLocation().y/(size_y + margin_y));
+				for(Position obs: obstacles)
+				{
+					c = checkCollision(Orientation.NORTH, obs, a, b);
+					if (c==3)
+					{
+						//check clearance
+						break;
+					}
+				}
+				
+				// avoidance
+				switch(c)
+				{
+					// left clear
+					case 1:
+						y = -(size_y +margin_y); 
+						break;
+					// right clear
+					case 2:
+						y = size_y + margin_y;
+						break;
+					// no collision
+					default:
+						y = -(size_y + margin_y);
+						theta = 0.0;
+						break;
+				}
+				
+			}
+			else
+			{
+				// reached target
+				car.setOrientation(Math.abs(3-target.orientation.ordinal()));
+				return true;
+			}
+			
 		car.setLocation(car.getBounds().x + x, car.getBounds().y + y);
 		car.theta = theta;
+		return false;
+		}
+		// move right
+		else if (bypasspath.contains("L") && movement == 0) 
+		{
+			y = -(size_y +margin_y);
+			car.setLocation(car.getBounds().x + x, car.getBounds().y + y);
+			bypasspath = bypasspath.substring(1);
+			return false;
+		}
 		return false;
 	}
 	
