@@ -373,8 +373,9 @@ public class SimulatorLayer
 	//		if can need check for multiple blocks of movement
 	// direction : direction the car is moving to
 	// return 0 if no collision
-	// return 1 if path on "left" is clear
-	// return 2 if path on "right" is clear
+	// return 1 if path on collision while moving right
+	// return 2 if path on collision while moving left
+	// return 3 if path on collision while moving up
 	// TODO
 	int checkCollision(Orientation direction, Position target)
 	{
@@ -382,10 +383,34 @@ public class SimulatorLayer
 		
 		// if have collision, collision check on altered path
 		// maybe can use recursive
-		for(Position obs: obstacles)
-		{
+		//for(Position obs: obstacles)
+		//{
 			
+		//}
+		double x = Math.floor(car.getLocation().x/(size_x + margin_x));
+		double y = Math.floor(17 - car.getLocation().y/(size_y + margin_y));
+		if (direction == Orientation.EAST)
+		{
+			if (((x + 4)> target.x-2) && ((y>(target.y-2))&&(y<(target.y+6))))
+			{
+				return 1;
+			}
+
 		}
+		else if (direction == Orientation.WEST)
+		{
+			if(((x - 1)< target.x+2) && ((y>(target.y-2))&&(y<(target.y+6))))
+			{
+				return 2;
+			}
+		}
+		else if (direction == Orientation.NORTH)
+		{
+		}
+		else if (direction == Orientation.SOUTH)
+		{
+		}
+
 		return 0;
 	}
 	
@@ -399,9 +424,15 @@ public class SimulatorLayer
 		if(Math.floor(target.x) > Math.floor(car.getLocation().x/(size_x + margin_x)))
 		{
 			int c = 0;
+			
 			for(Position obs: obstacles)
 			{
 				c = checkCollision(Orientation.EAST, obs);
+				if (c==1)
+				{
+					//check clearance
+					break;
+				}
 			}
 			
 			// avoidance
@@ -409,9 +440,11 @@ public class SimulatorLayer
 			{
 				// left clear
 				case 1:
+					y = -(size_y +margin_y); 
 					break;
 				// right clear
 				case 2:
+					y = size_y + margin_y;
 					break;
 				// no collision
 				default:
@@ -424,8 +457,35 @@ public class SimulatorLayer
 		// move left
 		else if(Math.floor(target.x) < Math.floor(car.getLocation().x/(size_x + margin_x)))
 		{
-			x = -( size_x + margin_x);
-			theta = -Math.PI/2;
+			int c = 0;
+			for(Position obs: obstacles)
+			{
+				c = checkCollision(Orientation.EAST, obs);
+				if (c==2)
+				{
+					//check clearance
+					break;
+				}
+			}
+			
+			// avoidance
+			switch(c)
+			{
+				// left clear
+				case 1:
+					y = -(size_y +margin_y); 
+					break;
+				// right clear
+				case 2:
+					y = size_y + margin_y;
+					break;
+				// no collision
+				default:
+					x = -( size_x + margin_x);
+					theta = -Math.PI/2;
+					break;
+			}
+			
 		}
 		// move down
 		else if(Math.floor(target.y) < Math.floor(17 - (car.getLocation().y/(size_y + margin_y))))
