@@ -22,7 +22,8 @@ public class SimulatorManager extends JPanel
 	boolean is_running = false;
 	Robot robot;
 	
-	int timer_delay = 10;
+	public Timer timer;
+	int timer_delay = 200;
 	
 	private static SimulatorManager _instance;
 	
@@ -104,7 +105,7 @@ public class SimulatorManager extends JPanel
 		// path planning here
 		robot.planRoute();
 		
-		Timer timer = new Timer(timer_delay, simulationUpdate);
+		timer = new Timer(timer_delay, simulationUpdate);
 		timer.start();
 		is_running = true;
 	}
