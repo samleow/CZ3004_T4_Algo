@@ -68,14 +68,24 @@ public abstract class SimObject
     	return image;
     }
 
-    public void direct(double x, double y)
+    public void lookAt(double x, double y)
     {
     	double d_x = this.x - x;
         double d_y = this.y - y;
         //direction = 180 + Math.atan2(d_y, d_x) * 180 / Math.PI;
         direction = Math.PI + Math.atan2(d_y, d_x);
     }
+    
+    public void direct(double x, double y)
+    {
+        direction = Math.PI + Math.atan2(y, x);
+    }
 
+    public void setDirection(double dir)
+    {
+    	direction = dir%(Math.PI*2);
+    }
+    
     public Rectangle getCollider()
     {
         return new Rectangle((int)x, (int)y, width, height);

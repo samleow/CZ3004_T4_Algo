@@ -10,6 +10,8 @@ import java.util.List;
 import javax.swing.JPanel;
 import javax.swing.Timer;
 
+import src.CarPosition;
+import src.HamiltonianPathSimulator;
 import src.Position;
 
 
@@ -17,9 +19,8 @@ public class SimulatorManager extends JPanel
 {
 	List<Obstacle> obstacles = new ArrayList<Obstacle>();
 	int block_size = 30;
-	Robot robot;
-	
 	boolean is_running = false;
+	Robot robot;
 	
 	int timer_delay = 10;
 	
@@ -29,10 +30,10 @@ public class SimulatorManager extends JPanel
 	{
 		block_size = SimulatorS.getBlockSize();
 		robot = Robot.getInstance();
-		robot.moveTo(block_size*0, block_size*17);
+		robot.moveTo(0.0, 0.0);
 		robot.setDimension(block_size*3, block_size*3);
-		robot.direct(0.0, 1.0);
-				
+		robot.setDirection(Math.PI/2);
+		
 	}
 	
 	public static SimulatorManager getInstance()
@@ -44,15 +45,22 @@ public class SimulatorManager extends JPanel
 		
 		return _instance;
 	}
-	
+		
 	public void setUpObstacles(List<Position> obs)
-	{		
+	{
+		// algo path planning here
+		HamiltonianPathSimulator h = new HamiltonianPathSimulator(obs);
+		robot.waypoints = h.getCarPositions();
+		
+		/*for(CarPosition wp : robot.waypoints)
+		{
+			wp.setvisited(false);
+		}*/
+		
 		for(Position o : obs)
 		{
-			obstacles.add(new Obstacle(o.getX()*block_size, o.getY()*block_size, block_size, block_size, 0.0));
+			obstacles.add(new Obstacle(o.getX()*block_size, o.getY()*block_size, block_size, block_size, o.getDirection()));
 		}
-		
-		
 	}
 	
 	void drawGrid(Graphics2D g)
@@ -72,6 +80,10 @@ public class SimulatorManager extends JPanel
 		super.paint(g);
 		
 		Graphics2D g2d = (Graphics2D) g;
+		
+        g2d.scale(1, -1);
+        g2d.translate(0, -getHeight());
+        
 		drawGrid(g2d);
 		
 		for (SimObject e : obstacles) {
@@ -79,7 +91,7 @@ public class SimulatorManager extends JPanel
         }
 
         g2d.drawImage(robot.getImage(), robot.getAffineTransform(), this);
-		
+        
 		g.dispose();
 	}
 	
@@ -88,6 +100,9 @@ public class SimulatorManager extends JPanel
 		// update robot here
 		if(is_running)
 			return;
+		
+		// path planning here
+		robot.planRoute();
 		
 		Timer timer = new Timer(timer_delay, simulationUpdate);
 		timer.start();

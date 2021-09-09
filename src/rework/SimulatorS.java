@@ -44,8 +44,6 @@ public class SimulatorS extends JFrame
 			@Override
 			public void actionPerformed(ActionEvent e)
 			{
-				// run algorithm to get shortest path
-				
 				// run simulation
 				SimulatorManager.getInstance().runSimulation();
 			}

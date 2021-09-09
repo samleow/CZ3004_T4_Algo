@@ -33,6 +33,23 @@ public class Position
 		return orientation;
 	}
 	
+	public double getDirection()
+	{
+		switch(orientation)
+		{
+			case NORTH:
+				return Math.PI/2;
+			case EAST:
+				return 0.0;
+			case WEST:
+				return Math.PI;
+			case SOUTH:
+				return -Math.PI/2;
+			default:
+				return -1.0;
+		}
+	}
+	
 	@Override
 	public String toString()
 	{
