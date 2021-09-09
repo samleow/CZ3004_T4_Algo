@@ -18,6 +18,21 @@ public class Position
 		this.orientation = orientation;
 	}
 	
+	public double getX()
+	{
+		return x;
+	}
+	
+	public double getY()
+	{
+		return y;
+	}
+	
+	public Orientation getOrientation()
+	{
+		return orientation;
+	}
+	
 	@Override
 	public String toString()
 	{
