@@ -23,7 +23,7 @@ import javax.swing.JLayeredPane;
 import javax.swing.JPanel;
 import javax.swing.Timer;
 
-import jdk.internal.agent.resources.agent;
+//import jdk.internal.agent.resources.agent;
 import src.Position.Orientation;
 
 public class SimulatorLayer
