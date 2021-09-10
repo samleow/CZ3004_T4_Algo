@@ -6,7 +6,8 @@ public class Command
 	{
 		WAIT,
 		MOVE,
-		TURN
+		TURN,
+		MOV2
 	}
 	
 	public CommandType command_type = CommandType.WAIT;
@@ -29,7 +30,7 @@ public class Command
 	@Override
 	public String toString()
 	{
-		return "[ " + command_type + ", " + arg1 + " ]";
+		return "[ " + command_type + ", " + arg1 + ", " + arg2 + " ]";
 	}
 	
 }
