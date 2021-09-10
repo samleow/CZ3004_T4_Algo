@@ -150,23 +150,55 @@ public class Robot extends SimObject
 			// problem here
 			// might need to iterate backwards
 			// TODO:
-			if(node.parent.parent != null)
-				prev_dir = getNodeDirection(node.parent, node.parent.parent);
-			else
+			/*if(node.parent.parent == null)
 			{
 				prev_dir = this.direction;
-				generateTurnCommands(curr_dir, prev_dir);
+				//generateTurnCommands(curr_dir, prev_dir);
 				node = node.parent;
 				continue;
 			}
+			*/
+			//else
+			//prev_dir = getNodeDirection(node.parent, node.parent.parent);
 			
-			generateTurnCommands(curr_dir, prev_dir);
-			commands.add(0, new Command(CommandType.MOVE, SimulatorS.getBlockSize()));
+			//generateTurnCommands(curr_dir, prev_dir);
+			//commands.add(0, new Command(CommandType.MOVE, SimulatorS.getBlockSize()));
+			/*moveByNodeDir(node, node.parent);
 			node = node.parent;
 		}
 		System.out.println("~ Command: " + current_path);
 		for(Command c : commands)
 			System.out.println(c.toString());
+	}*/
+	
+	/*void moveByNodeDir(Node curr, Node prev)
+	{
+		int x = 0, y = 0;
+		// move west
+		if(curr.i < prev.i)
+		{
+			x = -1;
+		}
+		// move east
+		else if(curr.i > prev.i)
+		{
+			x = 1;
+		}
+		// move north
+		else if(curr.j > prev.j)
+		{
+			y = 1;
+		}
+		// move south
+		else if(curr.j > prev.j)
+		{
+			y = -1;
+		}
+		else
+			return;
+		
+		commands.add(0, new Command(CommandType.MOV2, x*SimulatorS.getBlockSize(), y*SimulatorS.getBlockSize()));
+		
 	}*/
 	
 	double getNodeDirection(Node curr, Node prev)
@@ -406,6 +438,10 @@ public class Robot extends SimObject
 				break;
 			case TURN:
 				setDirection(direction + currCmd.arg1);
+				break;
+			case MOV2:
+				x += currCmd.arg1;
+				y += currCmd.arg2;
 				break;
 			default:
 				break;
