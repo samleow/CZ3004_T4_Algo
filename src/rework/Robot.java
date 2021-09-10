@@ -60,7 +60,7 @@ public class Robot extends SimObject
 			{
 				for (int k= 0; k<3; k++)
 				{
-					if ((int)obstacles.get(i).getX()+j< 20 && (int)obstacles.get(i).getX()-j> 0 && (int)obstacles.get(i).getY()+k< 20 && (int)obstacles.get(i).getY()-k> 0)
+					if ((int)obstacles.get(i).getX()+j< 20 && (int)obstacles.get(i).getX()-j>= 0 && (int)obstacles.get(i).getY()+k< 20 && (int)obstacles.get(i).getY()-k>= 0)
 					{
 						barrier[counter][0] = (int)obstacles.get(i).getX() + j;
 						barrier[counter][1] = (int)obstacles.get(i).getY() + k;
@@ -87,6 +87,17 @@ public class Robot extends SimObject
 			astar.process();
 			astar.displaySolution();
 			path.add(astar.getSolutionNode());
+		}
+		
+		for(Node n : path)
+		{
+			System.out.println(n.toString());
+			Node n1 = n;
+			while(n1.parent != null)
+			{
+				System.out.println(n1.parent.toString());
+				n1 = n1.parent;
+			}
 		}
 		
 		generateCommands(path.get(current_path));
@@ -119,12 +130,20 @@ public class Robot extends SimObject
 			if(node.parent.parent != null)
 				prev_dir = getNodeDirection(node.parent, node.parent.parent);
 			else
-				prev_dir = 0.0;
+			{
+				prev_dir = this.direction;
+				generateTurnCommands(curr_dir, prev_dir);
+				node = node.parent;
+				continue;
+			}
 			
 			generateTurnCommands(curr_dir, prev_dir);
 			commands.add(0, new Command(CommandType.MOVE, SimulatorS.getBlockSize()));
 			node = node.parent;
 		}
+		System.out.println("~ Command: " + current_path);
+		for(Command c : commands)
+			System.out.println(c.toString());
 	}
 	
 	double getNodeDirection(Node curr, Node prev)
@@ -208,7 +227,20 @@ public class Robot extends SimObject
 		// when reached waypoint, current_wp++
 		if(current_command+1 >= commands.size())
 		{
-			SimulatorManager.getInstance().timer.stop();
+
+			//SimulatorManager.getInstance().timer.stop();
+			
+			current_command = 0;
+			if(current_path+1 >= path.size())
+			{
+				SimulatorManager.getInstance().timer.stop();
+			}
+			else
+			{
+				current_path++;
+				generateCommands(path.get(current_path));
+			}
+			
 		}
 		else
 		{

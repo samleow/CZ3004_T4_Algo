@@ -23,7 +23,7 @@ public class SimulatorManager extends JPanel
 	Robot robot;
 	
 	public Timer timer;
-	int timer_delay = 200;
+	int timer_delay = 500;
 	
 	private static SimulatorManager _instance;
 	

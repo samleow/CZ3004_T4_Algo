@@ -26,4 +26,10 @@ public class Command
 		this.arg2 = arg2;
 	}
 	
+	@Override
+	public String toString()
+	{
+		return "[ " + command_type + ", " + arg1 + " ]";
+	}
+	
 }

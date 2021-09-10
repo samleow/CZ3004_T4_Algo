@@ -28,7 +28,7 @@ public class HamiltonianPathSimulator
 		positions.add(new CarPosition(3, 3, Orientation.WEST));*/
 		
 		List<CarPosition> shortest_path = new ArrayList<CarPosition>();
-		CarPosition start = new CarPosition(1, 4.5, Orientation.SOUTH, true); //calibrate to 0,0
+		CarPosition start = new CarPosition(1.5, 4, Orientation.SOUTH, true); //1, 4.5, Orientation.SOUTH, true); //calibrate to 0,0
 		shortest_path.add(start);
 		double total_dist = 0;
 		CarPosition temp = start;
@@ -62,7 +62,7 @@ public class HamiltonianPathSimulator
 		List<ExhaustiveSearch> double_check = new ArrayList<ExhaustiveSearch>();
 		List<CarPosition> path = new ArrayList<CarPosition>();
 		ExhaustiveSearch item;
-		path.add(new CarPosition(1, 4.5, Orientation.SOUTH, true)); //add start point to path
+		path.add(new CarPosition(1.5, 4, Orientation.SOUTH, true)); //1, 4.5, Orientation.SOUTH, true)); //add start point to path
 		double_check.add(new ExhaustiveSearch(1.5, 1.5, 0, positions, path)); //initialise start point for exhaustive search
 		
 		while (double_check.size() != 0)
