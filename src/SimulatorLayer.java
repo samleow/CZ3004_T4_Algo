@@ -45,6 +45,7 @@ public class SimulatorLayer
 	private JFrame frame = null;
 	private ImagePanel car;
 	private int[][] barrier = new int[500][2];
+	private static final int North=1, East= 2, South = 3, West =4;
 
 	class ImagePanel extends JPanel
 	{
@@ -815,7 +816,7 @@ public class SimulatorLayer
 		positions = h.getCarPositions();
 		for (int i =0; i<positions.size()-1; i++)
 		{
-			AStar astar = new AStar(20, 20, (int)positions.get(i).x, (int)positions.get(i).y, (int)positions.get(i+1).x, (int)positions.get(i+1).y, barrier);
+			AStar astar = new AStar(20, 20, (int)positions.get(i).x, (int)positions.get(i).y, (int)positions.get(i+1).x, (int)positions.get(i+1).y, barrier, true, North);
 			astar.display();
 			astar.process();
 			astar.displaySolution();

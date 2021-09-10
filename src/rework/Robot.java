@@ -1,6 +1,7 @@
 package src.rework;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 
 import src.CarPosition;
@@ -15,11 +16,16 @@ public class Robot extends SimObject
 
 	private static Robot _instance = null;
 	public int[][] barrier = new int[500][2];
-	
+	private static final int North=1, East= 2, South = 3, West =4;
 	List<CarPosition> waypoints = null;
 	public List<Position> obstacles = null;
 	List<Command> commands = new ArrayList<Command>();
 	List<Node> path = null;
+	int ori = North;
+	String plannedmovement = "";
+	ArrayList<String> steps;
+	int dir = ori;
+	int stage =0;
 	
 	int current_wp = 0;
 	int current_command = 0;
@@ -56,40 +62,57 @@ public class Robot extends SimObject
 		int counter = 0;
 		for (int i=0;i<obstacles.size();i++)
 		{
-			for (int j=0; j<3;j++)
-			{
-				for (int k= 0; k<3; k++)
-				{
-					if ((int)obstacles.get(i).getX()+j< 20 && (int)obstacles.get(i).getX()-j>= 0 && (int)obstacles.get(i).getY()+k< 20 && (int)obstacles.get(i).getY()-k>= 0)
+			if ((int)obstacles.get(i).getX()+1< 20 && (int)obstacles.get(i).getX()-1>= 0 && (int)obstacles.get(i).getY()+1< 20 && (int)obstacles.get(i).getY()-1>= 0)
 					{
-						barrier[counter][0] = (int)obstacles.get(i).getX() + j;
-						barrier[counter][1] = (int)obstacles.get(i).getY() + k;
+						barrier[counter][0] = (int)obstacles.get(i).getX() + 1;
+						barrier[counter][1] = (int)obstacles.get(i).getY() + 1;
 						counter++;
-						barrier[counter][0] = (int)obstacles.get(i).getX() - j;
-						barrier[counter][1] = (int)obstacles.get(i).getY() - k;
+						barrier[counter][0] = (int)obstacles.get(i).getX() - 1;
+						barrier[counter][1] = (int)obstacles.get(i).getY() - 1;
 						counter++;
-						barrier[counter][0] = (int)obstacles.get(i).getX() + j;
-						barrier[counter][1] = (int)obstacles.get(i).getY() - k;
+						barrier[counter][0] = (int)obstacles.get(i).getX() + 1;
+						barrier[counter][1] = (int)obstacles.get(i).getY() - 1;
 						counter++;
-						barrier[counter][0] = (int)obstacles.get(i).getX() - j;
-						barrier[counter][1] = (int)obstacles.get(i).getY() + k;
+						barrier[counter][0] = (int)obstacles.get(i).getX() - 1;
+						barrier[counter][1] = (int)obstacles.get(i).getY() + 1;
+						counter++;
+						barrier[counter][0] = (int)obstacles.get(i).getX() + 1;
+						barrier[counter][1] = (int)obstacles.get(i).getY();
+						counter++;
+						barrier[counter][0] = (int)obstacles.get(i).getX();
+						barrier[counter][1] = (int)obstacles.get(i).getY() + 1;
+						counter++;
+						barrier[counter][0] = (int)obstacles.get(i).getX() - 1;
+						barrier[counter][1] = (int)obstacles.get(i).getY();
+						counter++;
+						barrier[counter][0] = (int)obstacles.get(i).getX();
+						barrier[counter][1] = (int)obstacles.get(i).getY() - 1;
 						counter++;
 					}
-				}
-			}
 		}
 		
 		path = new ArrayList<Node>();
 		for (int i =0; i<waypoints.size()-1; i++)
 		{
-			AStar astar = new AStar(20, 20, (int)waypoints.get(i).getX(), (int)waypoints.get(i).getY(), (int)waypoints.get(i+1).getX(), (int)waypoints.get(i+1).getY(), barrier);
+			AStar astar = new AStar(20, 20, (int)waypoints.get(i).getX(), (int)waypoints.get(i).getY(), (int)waypoints.get(i+1).getX(), (int)waypoints.get(i+1).getY(), barrier, ori);
 			astar.display();
 			astar.process();
-			astar.displaySolution();
-			path.add(astar.getSolutionNode());
+			path = astar.displaySolution();
+			ori = path.get(0).orientation;
+			for (int j = path.size()-2; j>=0; j--)
+			{
+				Node temp = path.get(j);
+				System.out.print(temp.movement);
+				plannedmovement += temp.movement;
+			}
+			System.out.println();
 		}
+		steps = new ArrayList<String>(Arrays.asList(plannedmovement.split(",")));
+
+		System.out.println(steps);
+	}
 		
-		for(Node n : path)
+	/*for(Node n : path)
 		{
 			System.out.println(n.toString());
 			Node n1 = n;
@@ -102,7 +125,7 @@ public class Robot extends SimObject
 		
 		generateCommands(path.get(current_path));
 		
-		/*
+		
 		commands.add(new Command(CommandType.MOVE, SimulatorS.getBlockSize()));
 		commands.add(new Command(CommandType.MOVE, SimulatorS.getBlockSize()));
 		commands.add(new Command(CommandType.MOVE, SimulatorS.getBlockSize()));
@@ -112,10 +135,10 @@ public class Robot extends SimObject
 		commands.add(new Command(CommandType.TURN, Math.PI/2));
 		commands.add(new Command(CommandType.MOVE, SimulatorS.getBlockSize()));
 		commands.add(new Command(CommandType.MOVE, SimulatorS.getBlockSize()));
-		*/
-	}
+		
+	}*/
 	
-	void generateCommands(Node node)
+	/*void generateCommands(Node node)
 	{
 		commands = null;
 		commands = new ArrayList<Command>();
@@ -144,7 +167,7 @@ public class Robot extends SimObject
 		System.out.println("~ Command: " + current_path);
 		for(Command c : commands)
 			System.out.println(c.toString());
-	}
+	}*/
 	
 	double getNodeDirection(Node curr, Node prev)
 	{
@@ -204,10 +227,174 @@ public class Robot extends SimObject
 		
 		// movement update here
 		// must be based on delta time
-		if(commands == null || commands.size() == 0)
-			return;
 		
-		Command currCmd = commands.get(current_command);
+		if(steps.size() != 0)
+		{
+
+			String nextStep = steps.get(0);
+			if (nextStep.equals("F"))
+			{
+				if (dir == North)
+				{
+					y+=30;
+				}
+				else if(dir == South)
+				{
+					y-=30;
+				}
+				else if(dir == West)
+				{
+					x -=30;
+				}
+				else if (dir== East)
+				{
+					x += 30;
+				}
+				steps.remove(0);
+			}
+			else if (nextStep.equals("R"))
+			{
+				if (dir == North)
+				{
+					y-=30;
+				}
+				else if(dir == South)
+				{
+					y+=30;
+				}
+				else if(dir == West)
+				{
+					x +=30;
+				}
+				else if (dir== East)
+				{
+					x -= 30;
+				}
+				steps.remove(0);
+			}
+			else if (nextStep.equals("FL"))
+			{
+				if (stage == 0 || stage == 2){
+					if (dir == North)
+					{
+						y+=30;
+						stage++;	
+					}
+					else if(dir == South)
+					{
+						y-=30;
+						stage++;
+					}
+					else if(dir == West)
+					{
+						x -=30;
+						stage++;
+					}
+					else if (dir== East)
+					{
+						x += 30;
+						stage++;
+					}
+				}
+				else if (stage == 1){
+					if (dir == North)
+					{
+						setDirection(Math.PI);
+						dir = West;
+						stage++;
+					}
+					else if(dir == South)
+					{
+						setDirection(0.0);
+						dir = East;
+						stage++;
+					}
+					else if(dir == West)
+					{
+						setDirection(-Math.PI/2);
+						dir = South;
+						stage++;
+					}
+					else if (dir== East)
+					{
+						setDirection(Math.PI/2);
+						dir = North;
+						stage++;
+					}
+
+					
+				}
+				if (stage == 3){
+					stage = 0;
+					steps.remove(0);
+				}
+			}
+			else if (nextStep.equals("FR"))
+			{
+				if (stage == 0 || stage == 2){
+					if (dir == North)
+					{
+						y+=30;
+						stage++;	
+					}
+					else if(dir == South)
+					{
+						y-=30;
+						stage++;
+					}
+					else if(dir == West)
+					{
+						x -=30;
+						stage++;
+					}
+					else if (dir== East)
+					{
+						x += 30;
+						stage++;
+					}
+				}
+				else if (stage == 1){
+					if (dir == North)
+					{
+						setDirection(0.0);
+						dir = East;
+						stage++;
+					}
+					else if(dir == South)
+					{
+						setDirection(Math.PI);
+						dir = West;
+						stage++;
+					}
+					else if(dir == West)
+					{
+						setDirection(Math.PI/2);
+						dir = North;
+						stage++;
+					}
+					else if (dir== East)
+					{
+						setDirection(-Math.PI/2);
+						dir = South;
+						stage++;
+					}
+
+					
+				}
+				if (stage == 3){
+					stage = 0;
+					steps.remove(0);
+				}
+
+				
+				
+			}
+		}
+
+	}
+			//return;
+		
+		/*Command currCmd = commands.get(current_command);
 		
 		switch(currCmd.command_type)
 		{
@@ -245,7 +432,6 @@ public class Robot extends SimObject
 		else
 		{
 			current_command++;
-		}
-	}
-	
+		}*/
+
 }
