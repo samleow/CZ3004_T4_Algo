@@ -28,7 +28,7 @@ public class HamiltonianPathSimulator
 		positions.add(new CarPosition(3, 3, Orientation.WEST));*/
 		
 		List<CarPosition> shortest_path = new ArrayList<CarPosition>();
-		CarPosition start = new CarPosition(1, 3, Orientation.SOUTH, true); //1, 4.5, Orientation.SOUTH, true); //calibrate to 0,0
+		CarPosition start = new CarPosition(1, 3, Orientation.SOUTH, true); //1, 4.5, Orientation.SOUTH, true); //calibrate to 1,1
 		shortest_path.add(start);
 		double total_dist = 0;
 		CarPosition temp = start;

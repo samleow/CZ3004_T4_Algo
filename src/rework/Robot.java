@@ -8,6 +8,7 @@ import src.CarPosition;
 import src.Position;
 import src.AStar.AStar;
 import src.AStar.Node;
+import src.Position.Orientation;
 import src.rework.Command.CommandType;
 
 public class Robot extends SimObject
@@ -62,33 +63,168 @@ public class Robot extends SimObject
 		int counter = 0;
 		for (int i=0;i<obstacles.size();i++)
 		{
-			if ((int)obstacles.get(i).getX()+1< 20 && (int)obstacles.get(i).getX()-1>= 0 && (int)obstacles.get(i).getY()+1< 20 && (int)obstacles.get(i).getY()-1>= 0)
-					{
-						barrier[counter][0] = (int)obstacles.get(i).getX() + 1;
-						barrier[counter][1] = (int)obstacles.get(i).getY() + 1;
-						counter++;
-						barrier[counter][0] = (int)obstacles.get(i).getX() - 1;
-						barrier[counter][1] = (int)obstacles.get(i).getY() - 1;
-						counter++;
-						barrier[counter][0] = (int)obstacles.get(i).getX() + 1;
-						barrier[counter][1] = (int)obstacles.get(i).getY() - 1;
-						counter++;
-						barrier[counter][0] = (int)obstacles.get(i).getX() - 1;
-						barrier[counter][1] = (int)obstacles.get(i).getY() + 1;
-						counter++;
-						barrier[counter][0] = (int)obstacles.get(i).getX() + 1;
-						barrier[counter][1] = (int)obstacles.get(i).getY();
-						counter++;
-						barrier[counter][0] = (int)obstacles.get(i).getX();
-						barrier[counter][1] = (int)obstacles.get(i).getY() + 1;
-						counter++;
-						barrier[counter][0] = (int)obstacles.get(i).getX() - 1;
-						barrier[counter][1] = (int)obstacles.get(i).getY();
-						counter++;
-						barrier[counter][0] = (int)obstacles.get(i).getX();
-						barrier[counter][1] = (int)obstacles.get(i).getY() - 1;
-						counter++;
-					}
+			if ((int)obstacles.get(i).getX()< 20 && (int)obstacles.get(i).getX()>= 0 && (int)obstacles.get(i).getY()< 20 && (int)obstacles.get(i).getY()>= 0)
+			{
+				barrier[counter][0] = (int)obstacles.get(i).getX();
+				barrier[counter][1] = (int)obstacles.get(i).getY();
+				counter++;
+			}
+			if ((int)obstacles.get(i).getX()+1< 20 && (int)obstacles.get(i).getX()+1>= 0 && (int)obstacles.get(i).getY()+1< 20 && (int)obstacles.get(i).getY()+1>= 0)
+			{
+				barrier[counter][0] = (int)obstacles.get(i).getX() + 1;
+				barrier[counter][1] = (int)obstacles.get(i).getY() + 1;
+				counter++;
+			}
+			if ((int)obstacles.get(i).getX()-1< 20 && (int)obstacles.get(i).getX()-1>= 0 && (int)obstacles.get(i).getY()-1< 20 && (int)obstacles.get(i).getY()-1>= 0)	
+			{
+				barrier[counter][0] = (int)obstacles.get(i).getX() - 1;
+				barrier[counter][1] = (int)obstacles.get(i).getY() - 1;
+				counter++;
+			}	
+			if ((int)obstacles.get(i).getX()+1< 20 && (int)obstacles.get(i).getX()+1>= 0 && (int)obstacles.get(i).getY()-1< 20 && (int)obstacles.get(i).getY()-1>= 0)
+			{
+				barrier[counter][0] = (int)obstacles.get(i).getX() + 1;
+				barrier[counter][1] = (int)obstacles.get(i).getY() - 1;
+				counter++;
+			}
+			if ((int)obstacles.get(i).getX()-1< 20 && (int)obstacles.get(i).getX()-1>= 0 && (int)obstacles.get(i).getY()+1< 20 && (int)obstacles.get(i).getY()+1>= 0)
+			{
+				barrier[counter][0] = (int)obstacles.get(i).getX() - 1;
+				barrier[counter][1] = (int)obstacles.get(i).getY() + 1;
+				counter++;
+			}	
+			if ((int)obstacles.get(i).getX()+1< 20 && (int)obstacles.get(i).getX()+1>= 0 && (int)obstacles.get(i).getY()< 20 && (int)obstacles.get(i).getY()>= 0)
+			{
+				barrier[counter][0] = (int)obstacles.get(i).getX() + 1;
+				barrier[counter][1] = (int)obstacles.get(i).getY();
+				counter++;
+			}	
+			if ((int)obstacles.get(i).getX()< 20 && (int)obstacles.get(i).getX()>= 0 && (int)obstacles.get(i).getY()+1< 20 && (int)obstacles.get(i).getY()+1>= 0)
+			{
+				barrier[counter][0] = (int)obstacles.get(i).getX();
+				barrier[counter][1] = (int)obstacles.get(i).getY() + 1;
+				counter++;
+			}	
+			if ((int)obstacles.get(i).getX()-1< 20 && (int)obstacles.get(i).getX()-1>= 0 && (int)obstacles.get(i).getY()< 20 && (int)obstacles.get(i).getY()>= 0)
+			{
+				barrier[counter][0] = (int)obstacles.get(i).getX() - 1;
+				barrier[counter][1] = (int)obstacles.get(i).getY();
+				counter++;
+			}	
+			if ((int)obstacles.get(i).getX()< 20 && (int)obstacles.get(i).getX()>= 0 && (int)obstacles.get(i).getY()-1< 20 && (int)obstacles.get(i).getY()-1>= 0)
+			{	
+				barrier[counter][0] = (int)obstacles.get(i).getX();
+				barrier[counter][1] = (int)obstacles.get(i).getY() - 1;
+				counter++;
+			}
+			if (obstacles.get(i).getOrientation() == Orientation.NORTH)
+			{
+				if ((int)obstacles.get(i).getX()+1< 20 && (int)obstacles.get(i).getX()+1>= 0 && (int)obstacles.get(i).getY()+2< 20 && (int)obstacles.get(i).getY()+2>= 0)
+				{
+					barrier[counter][0] = (int)obstacles.get(i).getX()+1;
+					barrier[counter][1] = (int)obstacles.get(i).getY()+2;
+					counter++;
+				}
+				if ((int)obstacles.get(i).getX()-1< 20 && (int)obstacles.get(i).getX()-1>= 0 && (int)obstacles.get(i).getY()+2< 20 && (int)obstacles.get(i).getY()+2>= 0)
+				{
+					barrier[counter][0] = (int)obstacles.get(i).getX()-1;
+					barrier[counter][1] = (int)obstacles.get(i).getY()+2;
+					counter++;
+				}
+				/*if ((int)obstacles.get(i).getX()+3< 20 && (int)obstacles.get(i).getX()+3>= 0 && (int)obstacles.get(i).getY()+2< 20 && (int)obstacles.get(i).getY()+2>= 0)
+				{
+					barrier[counter][0] = (int)obstacles.get(i).getX()+3;
+					barrier[counter][1] = (int)obstacles.get(i).getY()+2;
+					counter++;
+				}
+				if ((int)obstacles.get(i).getX()-3< 20 && (int)obstacles.get(i).getX()-3>= 0 && (int)obstacles.get(i).getY()+2< 20 && (int)obstacles.get(i).getY()+2>= 0)
+				{
+					barrier[counter][0] = (int)obstacles.get(i).getX()-3;
+					barrier[counter][1] = (int)obstacles.get(i).getY()+2;
+					counter++;
+				}*/
+			}
+			else if (obstacles.get(i).getOrientation() == Orientation.SOUTH)
+			{
+				if ((int)obstacles.get(i).getX()+1< 20 && (int)obstacles.get(i).getX()+1>= 0 && (int)obstacles.get(i).getY()-2< 20 && (int)obstacles.get(i).getY()-2>= 0)
+				{
+					barrier[counter][0] = (int)obstacles.get(i).getX()+1;
+					barrier[counter][1] = (int)obstacles.get(i).getY()-2;
+					counter++;
+				}
+				if ((int)obstacles.get(i).getX()-1< 20 && (int)obstacles.get(i).getX()-1>= 0 && (int)obstacles.get(i).getY()-2< 20 && (int)obstacles.get(i).getY()-2>= 0)
+				{
+					barrier[counter][0] = (int)obstacles.get(i).getX()-1;
+					barrier[counter][1] = (int)obstacles.get(i).getY()-2;
+					counter++;
+				}
+				/*if ((int)obstacles.get(i).getX()+3< 20 && (int)obstacles.get(i).getX()+3>= 0 && (int)obstacles.get(i).getY()-2< 20 && (int)obstacles.get(i).getY()-2>= 0)
+				{
+					barrier[counter][0] = (int)obstacles.get(i).getX()+3;
+					barrier[counter][1] = (int)obstacles.get(i).getY()-2;
+					counter++;
+				}
+				if ((int)obstacles.get(i).getX()-3< 20 && (int)obstacles.get(i).getX()-3>= 0 && (int)obstacles.get(i).getY()-2< 20 && (int)obstacles.get(i).getY()-2>= 0)
+				{
+					barrier[counter][0] = (int)obstacles.get(i).getX()-3;
+					barrier[counter][1] = (int)obstacles.get(i).getY()-2;
+					counter++;
+				}*/
+			}
+			else if (obstacles.get(i).getOrientation() == Orientation.EAST)
+			{
+				if ((int)obstacles.get(i).getX()+2< 20 && (int)obstacles.get(i).getX()+2>= 0 && (int)obstacles.get(i).getY()-1< 20 && (int)obstacles.get(i).getY()-1>= 0)
+				{
+					barrier[counter][0] = (int)obstacles.get(i).getX()+2;
+					barrier[counter][1] = (int)obstacles.get(i).getY()-1;
+					counter++;
+				}
+				if ((int)obstacles.get(i).getX()+2< 20 && (int)obstacles.get(i).getX()+2>= 0 && (int)obstacles.get(i).getY()+1< 20 && (int)obstacles.get(i).getY()+1>= 0)
+				{
+					barrier[counter][0] = (int)obstacles.get(i).getX()+2;
+					barrier[counter][1] = (int)obstacles.get(i).getY()+1;
+					counter++;
+				}	
+				/*if ((int)obstacles.get(i).getX()+2< 20 && (int)obstacles.get(i).getX()+2>= 0 && (int)obstacles.get(i).getY()+3< 20 && (int)obstacles.get(i).getY()+3>= 0)
+				{
+					barrier[counter][0] = (int)obstacles.get(i).getX()+2;
+					barrier[counter][1] = (int)obstacles.get(i).getY()+3;
+					counter++;
+				}
+				if ((int)obstacles.get(i).getX()+2< 20 && (int)obstacles.get(i).getX()+2>= 0 && (int)obstacles.get(i).getY()-3< 20 && (int)obstacles.get(i).getY()-3>= 0)
+				{
+					barrier[counter][0] = (int)obstacles.get(i).getX()+2;
+					barrier[counter][1] = (int)obstacles.get(i).getY()-3;
+					counter++;
+				}*/
+			}	
+			else if (obstacles.get(i).getOrientation() == Orientation.WEST)
+			{
+				if ((int)obstacles.get(i).getX()-2< 20 && (int)obstacles.get(i).getX()-2>= 0 && (int)obstacles.get(i).getY()-1< 20 && (int)obstacles.get(i).getY()-1>= 0)
+				{
+					barrier[counter][0] = (int)obstacles.get(i).getX()-2;
+					barrier[counter][1] = (int)obstacles.get(i).getY()-1;
+					counter++;
+				}
+				if ((int)obstacles.get(i).getX()-2< 20 && (int)obstacles.get(i).getX()-2>= 0 && (int)obstacles.get(i).getY()+1< 20 && (int)obstacles.get(i).getY()+1>= 0)
+				{
+					barrier[counter][0] = (int)obstacles.get(i).getX()-2;
+					barrier[counter][1] = (int)obstacles.get(i).getY()+1;
+					counter++;
+				}
+				/*if ((int)obstacles.get(i).getX()-2< 20 && (int)obstacles.get(i).getX()-2>= 0 && (int)obstacles.get(i).getY()+3< 20 && (int)obstacles.get(i).getY()+3>= 0)
+				{
+					barrier[counter][0] = (int)obstacles.get(i).getX()-2;
+					barrier[counter][1] = (int)obstacles.get(i).getY()+3;
+					counter++;
+				}
+				if ((int)obstacles.get(i).getX()-2< 20 && (int)obstacles.get(i).getX()-2>= 0 && (int)obstacles.get(i).getY()-3< 20 && (int)obstacles.get(i).getY()-3>= 0)
+				{
+					barrier[counter][0] = (int)obstacles.get(i).getX()-2;
+					barrier[counter][1] = (int)obstacles.get(i).getY()-3;
+					counter++;
+				}*/
+			}	
 		}
 		
 		path = new ArrayList<Node>();
@@ -306,7 +442,7 @@ public class Robot extends SimObject
 			}
 			else if (nextStep.equals("FL"))
 			{
-				if (stage == 0 || stage == 2){
+				if (stage == 0 ||stage == 1|| stage == 2||stage == 4|| stage == 5||stage== 6){
 					if (dir == North)
 					{
 						y+=30;
@@ -328,7 +464,7 @@ public class Robot extends SimObject
 						stage++;
 					}
 				}
-				else if (stage == 1){
+				else if (stage == 3){
 					if (dir == North)
 					{
 						setDirection(Math.PI);
@@ -356,14 +492,14 @@ public class Robot extends SimObject
 
 					
 				}
-				if (stage == 3){
+				if (stage == 7){
 					stage = 0;
 					steps.remove(0);
 				}
 			}
 			else if (nextStep.equals("FR"))
 			{
-				if (stage == 0 || stage == 2){
+				if (stage == 0 ||stage == 1|| stage == 2||stage == 4|| stage == 5||stage== 6){
 					if (dir == North)
 					{
 						y+=30;
@@ -385,7 +521,7 @@ public class Robot extends SimObject
 						stage++;
 					}
 				}
-				else if (stage == 1){
+				else if (stage == 3){
 					if (dir == North)
 					{
 						setDirection(0.0);
@@ -413,14 +549,125 @@ public class Robot extends SimObject
 
 					
 				}
-				if (stage == 3){
+				if (stage == 7){
 					stage = 0;
 					steps.remove(0);
 				}
-
-				
-				
 			}
+			/*else if (nextStep.equals("RR"))
+			{
+				if (stage == 0)
+				{
+					if (dir == North)
+					{
+						setDirection(Math.PI);
+						dir = West;
+						stage++;
+					}
+					else if(dir == South)
+					{
+						setDirection(0.0);
+						dir = East;
+						stage++;
+					}
+					else if(dir == West)
+					{
+						setDirection(-Math.PI/2);
+						dir = South;
+						stage++;
+					}
+					else if (dir== East)
+					{
+						setDirection(Math.PI/2);
+						dir = North;
+						stage++;
+					}
+				}
+				else if (stage == 1||stage == 2||stage == 3)
+				{
+					if (dir == North)
+					{
+						y-=30;
+						stage++;	
+					}
+					else if(dir == South)
+					{
+						y+=30;
+						stage++;
+					}
+					else if(dir == West)
+					{
+						x +=30;
+						stage++;
+					}
+					else if (dir== East)
+					{
+						x -= 30;
+						stage++;
+					}
+				}
+				if (stage == 4){
+					stage = 0;
+					steps.remove(0);
+				}
+			}
+			else if (nextStep.equals("RL"))
+			{
+				if (stage == 0)
+				{
+					if (dir == North)
+					{
+						setDirection(0.0);
+						dir = East;
+						stage++;
+					}
+					else if(dir == South)
+					{
+						setDirection(Math.PI);
+						dir = West;
+						stage++;
+					}
+					else if(dir == West)
+					{
+						setDirection(Math.PI/2);
+						dir = North;
+						stage++;
+					}
+					else if (dir== East)
+					{
+						setDirection(-Math.PI/2);
+						dir = South;
+						stage++;
+					}
+				}
+				else if (stage == 1||stage == 2||stage == 3)
+				{
+					if (dir == North)
+					{
+						y-=30;
+						stage++;	
+					}
+					else if(dir == South)
+					{
+						y+=30;
+						stage++;
+					}
+					else if(dir == West)
+					{
+						x +=30;
+						stage++;
+					}
+					else if (dir== East)
+					{
+						x -= 30;
+						stage++;
+					}
+				}
+				if (stage == 4){
+					stage = 0;
+					steps.remove(0);
+				}
+			}*/
 		}
 
 	}

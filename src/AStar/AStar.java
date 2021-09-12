@@ -3,6 +3,7 @@ import src.CarPosition;
 import src.HamiltonianPathSimulator;
 import src.Position;
 import src.readinput;
+import src.Position.Orientation;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -94,7 +95,7 @@ public class AStar
                 Node t;
                 
                 if (current.i -1 >= 0){
-                    if (current.orientation == North)
+                    /*if (current.orientation == North)
                     {
                         t = grid[current.i -1][current.j];
                         UpdateCostifNeeded(current, t, current.finalCost + v_h_cost+ curves, West, "R,FL,");
@@ -103,15 +104,15 @@ public class AStar
                     {
                         t = grid[current.i -1][current.j];
                         UpdateCostifNeeded(current, t, current.finalCost + v_h_cost+ curves, West, "R,FR,");
-                    }
-                    else if (current.orientation == West){
+                    }*/
+                    if (current.orientation == West){
                         t = grid[current.i -1][current.j];
                         UpdateCostifNeeded(current, t, current.finalCost + v_h_cost, West, "F,");
                     }
                     
                 }
                 if (current.j -1 >= 0){
-                    if (current.orientation == East)
+                    /*if (current.orientation == East)
                     {
                         t = grid[current.i][current.j -1];
                         UpdateCostifNeeded(current, t, current.finalCost + v_h_cost+curves, South, "R,FR,");
@@ -120,8 +121,8 @@ public class AStar
                     {
                         t = grid[current.i][current.j -1];
                         UpdateCostifNeeded(current, t, current.finalCost + v_h_cost+curves,South,"R,FL,");
-                    }
-                    else if (current.orientation == South){
+                    }*/
+                    if (current.orientation == South){
                         t = grid[current.i][current.j -1];
                         UpdateCostifNeeded(current, t, current.finalCost + v_h_cost,South,"F,");
                     }
@@ -129,7 +130,7 @@ public class AStar
                     
                 }
                 if (current.j + 1 < grid[0].length){
-                    if (current.orientation == East)
+                    /*if (current.orientation == East)
                     {
                         t = grid[current.i ][current.j +1];
                         UpdateCostifNeeded(current, t, current.finalCost + v_h_cost+curves,North,"R,FL,");
@@ -138,8 +139,8 @@ public class AStar
                     {
                         t = grid[current.i ][current.j +1];
                         UpdateCostifNeeded(current, t, current.finalCost + v_h_cost+curves,North,"R,FR,");
-                    }
-                    else if (current.orientation == North){
+                    }*/
+                    if (current.orientation == North){
                         t = grid[current.i ][current.j +1];
                         UpdateCostifNeeded(current, t, current.finalCost + v_h_cost,North,"F,");
                     }
@@ -151,16 +152,113 @@ public class AStar
                         t = grid[current.i +1][current.j];
                         UpdateCostifNeeded(current, t, current.finalCost + v_h_cost, East,"F,");
                     }
-                    else if ( current.orientation == South)
+                    /*else if ( current.orientation == South)
                     {
                         t = grid[current.i +1][current.j];
                         UpdateCostifNeeded(current, t, current.finalCost + v_h_cost+curves,East, "R,FL,");
                     }
-                    else if (current.orientation == North){
+                    if (current.orientation == North){
                         t = grid[current.i +1][current.j];
                         UpdateCostifNeeded(current, t, current.finalCost + v_h_cost+curves,East,"R,FR,");
-                    }
+                    }*/
                     
+                }
+                 
+                if (current.i -3 >= 0){
+                    if (current.orientation == North)
+                    {
+                        t = grid[current.i -3][current.j];
+                        UpdateCostifNeeded(current, t, current.finalCost + 3*v_h_cost+ curves, West, "R,R,R,FL,");
+                    }
+                    else if ( current.orientation == South)
+                    {
+                        t = grid[current.i -3][current.j];
+                        UpdateCostifNeeded(current, t, current.finalCost + 3*v_h_cost+ curves, West, "R,R,R,FR,");
+                    }
+                    /*if (current.j -3 >=0)
+                    {
+                        if (current.orientation == East){
+                            t = grid[current.i -3][current.j -3];
+                            UpdateCostifNeeded(current, t, current.finalCost + 6*v_h_cost+ curves, North, "R,R,R,RR,");
+                        }
+                        else if (current.orientation == North){
+                            t = grid[current.i -3][current.j-3];
+                            UpdateCostifNeeded(current, t, current.finalCost + 6*v_h_cost+ curves, East, "R,R,R,RL,");
+                        }
+                    }*/
+                    
+                }
+                if (current.j -3 >= 0){
+                    if (current.orientation == East)
+                    {
+                        t = grid[current.i][current.j -3];
+                        UpdateCostifNeeded(current, t, current.finalCost + 3*v_h_cost+curves, South, "R,R,R,FR,");
+                    }
+                    else if ( current.orientation == West)
+                    {
+                        t = grid[current.i][current.j -3];
+                        UpdateCostifNeeded(current, t, current.finalCost + 3*v_h_cost+curves,South,"R,R,R,FL,");
+                    }
+                    /*if (current.i +3 < grid.length)
+                    {
+                        if(current.orientation == North){
+                            t = grid[current.i+3][current.j -3];
+                            UpdateCostifNeeded(current, t, current.finalCost + 6*v_h_cost+curves,West,"R,R,R,RR,");
+                        }
+                        else if (current.orientation == West){
+                            t = grid[current.i+3][current.j -3];
+                            UpdateCostifNeeded(current, t, current.finalCost + 6*v_h_cost+curves,North,"R,R,R,RL,");
+                        }
+                    }*/
+                    
+                }
+                if (current.j + 3 < grid[0].length){
+                    if (current.orientation == East)
+                    {
+                        t = grid[current.i ][current.j +3];
+                        UpdateCostifNeeded(current, t, current.finalCost + 3*v_h_cost+curves,North,"R,R,R,FL,");
+                    }
+                    else if ( current.orientation == West)
+                    {
+                        t = grid[current.i ][current.j +3];
+                        UpdateCostifNeeded(current, t, current.finalCost + 3*v_h_cost+curves,North,"R,R,R,FR,");
+                    }
+                    /*if (current.i -3 >= 0)
+                    {
+                        if (current.orientation == South)
+                        {
+                            t = grid[current.i-3][current.j +3];
+                            UpdateCostifNeeded(current, t, current.finalCost + 6*v_h_cost+curves,East,"R,R,R,RR,");
+                        }
+                        else if (current.orientation == East)
+                        {
+                            t = grid[current.i-3][current.j +3];
+                            UpdateCostifNeeded(current, t, current.finalCost + 6*v_h_cost+curves,South,"R,R,R,RL,");
+                        }
+                    }*/
+                    
+                }
+                if (current.i + 3 < grid.length){
+                    if (current.orientation == North){
+                        t = grid[current.i +3][current.j];
+                        UpdateCostifNeeded(current, t, current.finalCost + 3*v_h_cost+curves,East,"R,R,R,FR,");
+                    }
+                    else if ( current.orientation == South)
+                    {
+                        t = grid[current.i +3][current.j];
+                        UpdateCostifNeeded(current, t, current.finalCost + 3*v_h_cost+curves,East, "R,R,R,FL,");
+                    }
+                    /*if (current.j + 3 < grid[0].length)
+                    {
+                        if (current.orientation == South){
+                            t = grid[current.i +3][current.j+3];
+                            UpdateCostifNeeded(current, t, current.finalCost + 6*v_h_cost+curves,East, "R,R,R,RL,");
+                        }
+                        else if (current.orientation == East){
+                            t = grid[current.i +3][current.j+3];
+                            UpdateCostifNeeded(current, t, current.finalCost + 6*v_h_cost+curves,East, "R,R,R,RR,");
+                        }
+                    }*/
                 }
             }
             }
