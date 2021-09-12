@@ -230,7 +230,23 @@ public class Robot extends SimObject
 		path = new ArrayList<Node>();
 		for (int i =0; i<waypoints.size()-1; i++)
 		{
-			AStar astar = new AStar(20, 20, (int)waypoints.get(i).getX(), (int)waypoints.get(i).getY(), (int)waypoints.get(i+1).getX(), (int)waypoints.get(i+1).getY(), barrier, ori);
+			AStar astar;
+			if(waypoints.get(i).getOrientation() == Orientation.NORTH)
+			{
+				astar = new AStar(20, 20, (int)waypoints.get(i).getX(), (int)waypoints.get(i).getY(), (int)waypoints.get(i+1).getX(), (int)waypoints.get(i+1).getY(), barrier, ori, South);
+			}
+			else if(waypoints.get(i).getOrientation() == Orientation.SOUTH)
+			{
+				astar = new AStar(20, 20, (int)waypoints.get(i).getX(), (int)waypoints.get(i).getY(), (int)waypoints.get(i+1).getX(), (int)waypoints.get(i+1).getY(), barrier, ori, North);
+			}
+			else if(waypoints.get(i).getOrientation() == Orientation.EAST)
+			{
+				astar = new AStar(20, 20, (int)waypoints.get(i).getX(), (int)waypoints.get(i).getY(), (int)waypoints.get(i+1).getX(), (int)waypoints.get(i+1).getY(), barrier, ori, West);
+			}
+			else
+			{
+				astar = new AStar(20, 20, (int)waypoints.get(i).getX(), (int)waypoints.get(i).getY(), (int)waypoints.get(i+1).getX(), (int)waypoints.get(i+1).getY(), barrier, ori, East);
+			}
 			astar.display();
 			astar.process();
 			path = astar.displaySolution();
@@ -442,7 +458,7 @@ public class Robot extends SimObject
 			}
 			else if (nextStep.equals("FL"))
 			{
-				if (stage == 0 ||stage == 1|| stage == 2||stage == 4|| stage == 5||stage== 6){
+				if (stage == 0 || stage == 2){
 					if (dir == North)
 					{
 						y+=30;
@@ -464,7 +480,7 @@ public class Robot extends SimObject
 						stage++;
 					}
 				}
-				else if (stage == 3){
+				else if (stage == 1){
 					if (dir == North)
 					{
 						setDirection(Math.PI);
@@ -492,14 +508,14 @@ public class Robot extends SimObject
 
 					
 				}
-				if (stage == 7){
+				if (stage == 3){
 					stage = 0;
 					steps.remove(0);
 				}
 			}
 			else if (nextStep.equals("FR"))
 			{
-				if (stage == 0 ||stage == 1|| stage == 2||stage == 4|| stage == 5||stage== 6){
+				if (stage == 0 || stage == 2){
 					if (dir == North)
 					{
 						y+=30;
@@ -521,7 +537,7 @@ public class Robot extends SimObject
 						stage++;
 					}
 				}
-				else if (stage == 3){
+				else if (stage == 1){
 					if (dir == North)
 					{
 						setDirection(0.0);
@@ -549,7 +565,7 @@ public class Robot extends SimObject
 
 					
 				}
-				if (stage == 7){
+				if (stage == 3){
 					stage = 0;
 					steps.remove(0);
 				}

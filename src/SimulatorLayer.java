@@ -816,7 +816,7 @@ public class SimulatorLayer
 		positions = h.getCarPositions();
 		for (int i =0; i<positions.size()-1; i++)
 		{
-			AStar astar = new AStar(20, 20, (int)positions.get(i).x, (int)positions.get(i).y, (int)positions.get(i+1).x, (int)positions.get(i+1).y, barrier, North);
+			AStar astar = new AStar(20, 20, (int)positions.get(i).x, (int)positions.get(i).y, (int)positions.get(i+1).x, (int)positions.get(i+1).y, barrier, North, South);
 			astar.display();
 			astar.process();
 			astar.displaySolution();
