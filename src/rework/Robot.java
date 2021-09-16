@@ -254,9 +254,10 @@ public class Robot extends SimObject
 			for (int j = path.size()-2; j>=0; j--)
 			{
 				Node temp = path.get(j);
-				System.out.print(temp.movement);
 				plannedmovement += temp.movement;
 			}
+			plannedmovement += "S,";
+			System.out.print(plannedmovement);
 			System.out.println();
 		}
 		steps = new ArrayList<String>(Arrays.asList(plannedmovement.split(",")));
@@ -569,6 +570,11 @@ public class Robot extends SimObject
 					stage = 0;
 					steps.remove(0);
 				}
+			}
+			else if (nextStep.equals("S")){
+				x+=0;
+				y+=0;
+				steps.remove(0);
 			}
 			/*else if (nextStep.equals("RR"))
 			{
