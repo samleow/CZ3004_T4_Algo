@@ -25,7 +25,7 @@ public class CarPosition extends Position
 		if (orientation == Orientation.SOUTH)
 		{
 			this.x = x ;
-			this.y = y -2;
+			this.y = y -4;
 			car_facing = (Math.PI) / 2;
 			visited = false;
 		}
@@ -33,14 +33,14 @@ public class CarPosition extends Position
 		else if (orientation == Orientation.NORTH)
 		{
 			this.x = x;
-			this.y = y +2;
+			this.y = y +4;
 			car_facing = -(Math.PI) / 2;
 			visited = false;
 		}
 		//car facing left
 		else if (orientation == Orientation.EAST)
 		{
-			this.x = x +2;
+			this.x = x +4;
 			this.y = y;
 			car_facing = Math.PI;
 			visited = false;
@@ -48,7 +48,7 @@ public class CarPosition extends Position
 		//car facing right
 		else if (orientation == Orientation.WEST)
 		{
-			this.x = x -2;
+			this.x = x -4;
 			this.y = y;
 			car_facing = 0.0;
 			visited = false;

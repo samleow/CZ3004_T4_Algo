@@ -95,10 +95,208 @@ public class AStar
                     return;
 
                 Node t;
+
+                switch(current.orientation)
+                {
+                    //backward
+                    case North:
+                        if (current.j -2 >=0)
+                        {
+                            t = grid[current.i][current.j-1];
+                            UpdateCostifNeeded(current, t, current.finalCost + v_h_cost, North, "R,");
+                        }
+                        //forward
+                        if (current.j+2 <grid[0].length)
+                        {
+                            t = grid[current.i][current.j+1];
+                            UpdateCostifNeeded(current, t, current.finalCost + v_h_cost, North, "F,");
+                        }
+                        if (current.j+3<grid[0].length && current.i+4<grid.length)
+                        {
+                            boolean noobs = true;
+                            for (int i = -1; i<5;i++)
+                            {
+                                for (int j = 1;j<4;j++)
+                                {
+                                    if (grid[current.i+i][current.j+j]==null)
+                                        noobs = false;
+                                }
+                            }
+                            if (noobs)
+                            {
+                                t = grid[current.i+3][current.j+2];
+                                UpdateCostifNeeded(current, t,current.finalCost + 5*v_h_cost+ curves , East, "FR,");
+                            }
+                        }
+                        if (current.j+3<grid[0].length && current.i-4>=0)
+                        {
+                            boolean noobs = true;
+                            for (int i = -4; i<2;i++)
+                            {
+                                for (int j = 1;j<4;j++)
+                                {
+                                    if (grid[current.i+i][current.j+j]==null)
+                                        noobs = false;
+                                }
+                            }
+                            if (noobs)
+                            {
+                                t = grid[current.i-3][current.j+2];
+                                UpdateCostifNeeded(current, t,current.finalCost + 5*v_h_cost+ curves , West, "FL,");
+                            }
+                        }
+                        break;
+                    case(South):
+                        //backward
+                        if (current.j +2 <grid[0].length)
+                        {
+                            t = grid[current.i][current.j+1];
+                            UpdateCostifNeeded(current, t, current.finalCost + v_h_cost, South, "R,");
+                        }
+                        //forward
+                        if (current.j-2 >= 0)
+                        {
+                            t = grid[current.i][current.j-1];
+                            UpdateCostifNeeded(current, t, current.finalCost + v_h_cost, South, "F,");
+                        }
+                        if (current.j-3>=0 && current.i-4>=0)
+                        {
+                            boolean noobs = true;
+                            for (int i = -4; i<2;i++)
+                            {
+                                for (int j = -3;j<0;j++)
+                                {
+                                    if (grid[current.i+i][current.j+j]==null)
+                                        noobs = false;
+                                }
+                            }
+                            if (noobs)
+                            {
+                                t = grid[current.i-3][current.j-2];
+                                UpdateCostifNeeded(current, t,current.finalCost + 5*v_h_cost+ curves , West, "FR,");
+                            }
+                        }
+                        if (current.j-3>=0 && current.i+4<grid.length)
+                        {
+                            boolean noobs = true;
+                            for (int i = -1; i<5;i++)
+                            {
+                                for (int j = -3;j<0;j++)
+                                {
+                                    if (grid[current.i+i][current.j+j]==null)
+                                        noobs = false;
+                                }
+                            }
+                            if (noobs)
+                            {
+                                t = grid[current.i+3][current.j-2];
+                                UpdateCostifNeeded(current, t,current.finalCost + 5*v_h_cost+ curves , East, "FL,");
+                            }
+                        }
+                        break;
+                    case(East):
+                        //forward
+                        if (current.i +2 <grid[0].length)
+                        {
+                            t = grid[current.i+1][current.j];
+                            UpdateCostifNeeded(current, t, current.finalCost + v_h_cost, East, "F,");
+                        }
+                        //backward
+                        if (current.i-2 >= 0)
+                        {
+                            t = grid[current.i-1][current.j];
+                            UpdateCostifNeeded(current, t, current.finalCost + v_h_cost, East, "R,");
+                        }
+                        if (current.j+4< grid[0].length && current.i+3<grid.length)
+                        {
+                            boolean noobs = true;
+                            for (int i = 1; i<4;i++)
+                            {
+                                for (int j = -1;j<5;j++)
+                                {
+                                    if (grid[current.i+i][current.j+j]==null)
+                                        noobs = false;
+                                }
+                            }
+                            if (noobs)
+                            {
+                                t = grid[current.i+2][current.j+3];
+                                UpdateCostifNeeded(current, t,current.finalCost + 5*v_h_cost+ curves , North, "FL,");
+                            }
+                        }
+                        if (current.j-4>=0 && current.i+3<grid.length)
+                        {
+                            boolean noobs = true;
+                            for (int i = 1; i<4;i++)
+                            {
+                                for (int j = -4;j<2;j++)
+                                {
+                                    if (grid[current.i+i][current.j+j]==null)
+                                        noobs = false;
+                                }
+                            }
+                            if (noobs)
+                            {
+                                t = grid[current.i+2][current.j-3];
+                                UpdateCostifNeeded(current, t,current.finalCost + 5*v_h_cost+ curves , South, "FR,");
+                            }
+                        }
+                        break;
+                    case(West):
+                        //forward
+                        if (current.i -2 >= 0)
+                        {
+                            t = grid[current.i-1][current.j];
+                            UpdateCostifNeeded(current, t, current.finalCost + v_h_cost, West, "F,");
+                        }
+                        //backward
+                        if (current.i+2 < grid.length)
+                        {
+                            t = grid[current.i+1][current.j];
+                            UpdateCostifNeeded(current, t, current.finalCost + v_h_cost, West, "R,");
+                        }
+                        if (current.j+4<grid[0].length && current.i-3>=0)
+                        {
+                            boolean noobs = true;
+                            for (int i = -3; i<0;i++)
+                            {
+                                for (int j = -1;j<5;j++)
+                                {
+                                    if (grid[current.i+i][current.j+j]==null)
+                                        noobs = false;
+                                }
+                            }
+                            if (noobs)
+                            {
+                                t = grid[current.i-2][current.j+3];
+                                UpdateCostifNeeded(current, t,current.finalCost + 5*v_h_cost+ curves , North, "FR,");
+                            }
+                        }
+                        if (current.j-4>=0 && current.i-3>=0)
+                        {
+                            boolean noobs = true;
+                            for (int i = -3; i<0;i++)
+                            {
+                                for (int j = -4;j<2;j++)
+                                {
+                                    if (grid[current.i+i][current.j+j]==null)
+                                        noobs = false;
+                                }
+                            }
+                            if (noobs)
+                            {
+                                t = grid[current.i-2][current.j-3];
+                                UpdateCostifNeeded(current, t,current.finalCost + 5*v_h_cost+ curves , South, "FL,");
+                            }
+                        }
+                        break;
+
+                }
                 
-                if (current.i -1 >= 0){
+                /*if (current.i -1 >= 0){
                     if (current.orientation == North)
                     {
+                        
                         t = grid[current.i -1][current.j];
                         UpdateCostifNeeded(current, t, current.finalCost + v_h_cost+ curves, West, "R,FL,");
                     }
@@ -180,7 +378,7 @@ public class AStar
                         UpdateCostifNeeded(current, t, current.finalCost + v_h_cost,West,"R,");
                     }
                     
-                }
+                }*/
                  
                 /*if (current.i -3 >= 0){
                     if (current.orientation == North)
@@ -320,6 +518,8 @@ public class AStar
                 System.out.println(current);
                 grid[current.i][current.j].solution = true;
                 while(current.parent != null){
+                    //System.out.println(current.parent.movement);
+                    //System.out.println(current.parent.orientation);
                     System.out.println(" -> " + current.parent);
                     trip.add(current.parent);
                     grid[current.parent.i][current.parent.j].solution = true;
@@ -353,8 +553,7 @@ public class AStar
             return null;
         }
         public static void main(String[] args){
-            AStar astar = new AStar(5, 5, 0, 0, 3, 2, new int[][]{
-                {0,4},{2,2},{3,1},{3,3},{2,1},{2,3}
+            AStar astar = new AStar(15, 15, 1, 1, 5, 6, new int[][]{
             }, North, South);
             astar.display();
             astar.process();

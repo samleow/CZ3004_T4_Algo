@@ -117,7 +117,7 @@ public class Robot extends SimObject
 				barrier[counter][1] = (int)obstacles.get(i).getY() - 1;
 				counter++;
 			}
-			if (obstacles.get(i).getOrientation() == Orientation.NORTH)
+			/*if (obstacles.get(i).getOrientation() == Orientation.NORTH)
 			{
 				if ((int)obstacles.get(i).getX()+1< 20 && (int)obstacles.get(i).getX()+1>= 0 && (int)obstacles.get(i).getY()+2< 20 && (int)obstacles.get(i).getY()+2>= 0)
 				{
@@ -131,18 +131,6 @@ public class Robot extends SimObject
 					barrier[counter][1] = (int)obstacles.get(i).getY()+2;
 					counter++;
 				}
-				/*if ((int)obstacles.get(i).getX()+3< 20 && (int)obstacles.get(i).getX()+3>= 0 && (int)obstacles.get(i).getY()+2< 20 && (int)obstacles.get(i).getY()+2>= 0)
-				{
-					barrier[counter][0] = (int)obstacles.get(i).getX()+3;
-					barrier[counter][1] = (int)obstacles.get(i).getY()+2;
-					counter++;
-				}
-				if ((int)obstacles.get(i).getX()-3< 20 && (int)obstacles.get(i).getX()-3>= 0 && (int)obstacles.get(i).getY()+2< 20 && (int)obstacles.get(i).getY()+2>= 0)
-				{
-					barrier[counter][0] = (int)obstacles.get(i).getX()-3;
-					barrier[counter][1] = (int)obstacles.get(i).getY()+2;
-					counter++;
-				}*/
 			}
 			else if (obstacles.get(i).getOrientation() == Orientation.SOUTH)
 			{
@@ -158,18 +146,6 @@ public class Robot extends SimObject
 					barrier[counter][1] = (int)obstacles.get(i).getY()-2;
 					counter++;
 				}
-				/*if ((int)obstacles.get(i).getX()+3< 20 && (int)obstacles.get(i).getX()+3>= 0 && (int)obstacles.get(i).getY()-2< 20 && (int)obstacles.get(i).getY()-2>= 0)
-				{
-					barrier[counter][0] = (int)obstacles.get(i).getX()+3;
-					barrier[counter][1] = (int)obstacles.get(i).getY()-2;
-					counter++;
-				}
-				if ((int)obstacles.get(i).getX()-3< 20 && (int)obstacles.get(i).getX()-3>= 0 && (int)obstacles.get(i).getY()-2< 20 && (int)obstacles.get(i).getY()-2>= 0)
-				{
-					barrier[counter][0] = (int)obstacles.get(i).getX()-3;
-					barrier[counter][1] = (int)obstacles.get(i).getY()-2;
-					counter++;
-				}*/
 			}
 			else if (obstacles.get(i).getOrientation() == Orientation.EAST)
 			{
@@ -185,18 +161,7 @@ public class Robot extends SimObject
 					barrier[counter][1] = (int)obstacles.get(i).getY()+1;
 					counter++;
 				}	
-				/*if ((int)obstacles.get(i).getX()+2< 20 && (int)obstacles.get(i).getX()+2>= 0 && (int)obstacles.get(i).getY()+3< 20 && (int)obstacles.get(i).getY()+3>= 0)
-				{
-					barrier[counter][0] = (int)obstacles.get(i).getX()+2;
-					barrier[counter][1] = (int)obstacles.get(i).getY()+3;
-					counter++;
-				}
-				if ((int)obstacles.get(i).getX()+2< 20 && (int)obstacles.get(i).getX()+2>= 0 && (int)obstacles.get(i).getY()-3< 20 && (int)obstacles.get(i).getY()-3>= 0)
-				{
-					barrier[counter][0] = (int)obstacles.get(i).getX()+2;
-					barrier[counter][1] = (int)obstacles.get(i).getY()-3;
-					counter++;
-				}*/
+				
 			}	
 			else if (obstacles.get(i).getOrientation() == Orientation.WEST)
 			{
@@ -212,19 +177,8 @@ public class Robot extends SimObject
 					barrier[counter][1] = (int)obstacles.get(i).getY()+1;
 					counter++;
 				}
-				/*if ((int)obstacles.get(i).getX()-2< 20 && (int)obstacles.get(i).getX()-2>= 0 && (int)obstacles.get(i).getY()+3< 20 && (int)obstacles.get(i).getY()+3>= 0)
-				{
-					barrier[counter][0] = (int)obstacles.get(i).getX()-2;
-					barrier[counter][1] = (int)obstacles.get(i).getY()+3;
-					counter++;
-				}
-				if ((int)obstacles.get(i).getX()-2< 20 && (int)obstacles.get(i).getX()-2>= 0 && (int)obstacles.get(i).getY()-3< 20 && (int)obstacles.get(i).getY()-3>= 0)
-				{
-					barrier[counter][0] = (int)obstacles.get(i).getX()-2;
-					barrier[counter][1] = (int)obstacles.get(i).getY()-3;
-					counter++;
-				}*/
-			}	
+				
+			}*/	
 		}
 		
 		path = new ArrayList<Node>();
@@ -459,7 +413,7 @@ public class Robot extends SimObject
 			}
 			else if (nextStep.equals("FL"))
 			{
-				if (stage == 0 || stage == 2){
+				if (stage == 0 || stage == 1||stage == 3||stage == 4||stage== 5){
 					if (dir == North)
 					{
 						y+=30;
@@ -481,7 +435,7 @@ public class Robot extends SimObject
 						stage++;
 					}
 				}
-				else if (stage == 1){
+				else if (stage == 2){
 					if (dir == North)
 					{
 						setDirection(Math.PI);
@@ -509,14 +463,14 @@ public class Robot extends SimObject
 
 					
 				}
-				if (stage == 3){
+				if (stage == 6){
 					stage = 0;
 					steps.remove(0);
 				}
 			}
 			else if (nextStep.equals("FR"))
 			{
-				if (stage == 0 || stage == 2){
+				if (stage == 0 || stage == 1||stage == 3||stage == 4||stage==5){
 					if (dir == North)
 					{
 						y+=30;
@@ -538,7 +492,7 @@ public class Robot extends SimObject
 						stage++;
 					}
 				}
-				else if (stage == 1){
+				else if (stage == 2){
 					if (dir == North)
 					{
 						setDirection(0.0);
@@ -566,7 +520,7 @@ public class Robot extends SimObject
 
 					
 				}
-				if (stage == 3){
+				if (stage == 6){
 					stage = 0;
 					steps.remove(0);
 				}
