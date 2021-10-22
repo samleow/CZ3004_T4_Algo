@@ -9,7 +9,6 @@ import src.Position;
 import src.AStar.AStar;
 import src.AStar.Node;
 import src.Position.Orientation;
-import src.rework.Command.CommandType;
 
 public class Robot extends SimObject
 {
@@ -20,17 +19,20 @@ public class Robot extends SimObject
 	private static final int North=1, East= 2, South = 3, West =4;
 	List<CarPosition> waypoints = null;
 	public List<Position> obstacles = null;
-	List<Command> commands = new ArrayList<Command>();
 	List<Node> path = null;
 	int ori = North;
 	String plannedmovement = "";
 	ArrayList<String> steps;
 	int dir = ori;
 	int stage =0;
-	
+	Boolean onspotright;
+	Boolean onspotleft;
 	int current_wp = 0;
 	int current_command = 0;
 	int current_path = 0;
+	boolean onspot;
+	boolean contingencycheck;
+	int finalori;
 	
 	private Robot()
 	{
@@ -185,32 +187,288 @@ public class Robot extends SimObject
 		for (int i =0; i<waypoints.size()-1; i++)
 		{
 			AStar astar;
-			if(waypoints.get(i).getOrientation() == Orientation.NORTH)
-			{
-				astar = new AStar(20, 20, (int)waypoints.get(i).getX(), (int)waypoints.get(i).getY(), (int)waypoints.get(i+1).getX(), (int)waypoints.get(i+1).getY(), barrier, ori, South);
-			}
-			else if(waypoints.get(i).getOrientation() == Orientation.SOUTH)
-			{
-				astar = new AStar(20, 20, (int)waypoints.get(i).getX(), (int)waypoints.get(i).getY(), (int)waypoints.get(i+1).getX(), (int)waypoints.get(i+1).getY(), barrier, ori, North);
-			}
-			else if(waypoints.get(i).getOrientation() == Orientation.EAST)
-			{
-				astar = new AStar(20, 20, (int)waypoints.get(i).getX(), (int)waypoints.get(i).getY(), (int)waypoints.get(i+1).getX(), (int)waypoints.get(i+1).getY(), barrier, ori, West);
-			}
-			else
-			{
-				astar = new AStar(20, 20, (int)waypoints.get(i).getX(), (int)waypoints.get(i).getY(), (int)waypoints.get(i+1).getX(), (int)waypoints.get(i+1).getY(), barrier, ori, East);
-			}
+			astar = new AStar(20, 20, (int)waypoints.get(i).getX(), (int)waypoints.get(i).getY(), (int)waypoints.get(i+1).getX(), (int)waypoints.get(i+1).getY(), barrier, ori);
 			astar.display();
 			astar.process();
 			path = astar.displaySolution();
-			ori = path.get(0).orientation;
-			for (int j = path.size()-2; j>=0; j--)
+			int k = 1;
+			onspot = false;
+			contingencycheck = false;
+			while (path == null) //path is empty array list
 			{
-				Node temp = path.get(j);
-				plannedmovement += temp.movement;
+				if (waypoints.get(i).getX() == waypoints.get(i+1).getX() && waypoints.get(i).getY() == waypoints.get(i+1).getY())
+				{
+					onspot = true;
+					switch (ori)
+					{
+						//North
+						case 1:
+						{
+							if (waypoints.get(i+1).getOrientation() == Orientation.EAST)
+							{
+								//add turn left
+								plannedmovement += "u,S,";
+								ori = 4;
+							}
+							else if (waypoints.get(i+1).getOrientation() == Orientation.WEST)
+							{
+								//add turn right
+								plannedmovement += "i,S,";
+								ori = 2;
+							}
+							else if (waypoints.get(i+1).getOrientation() == Orientation.NORTH)
+							{
+								//turn 180
+								plannedmovement += "u,u,S,";
+								ori = 3;
+							}
+							break;
+						}
+						//East
+						case 2:
+						{
+							if (waypoints.get(i+1).getOrientation() == Orientation.NORTH)
+							{
+								//add turn left
+								plannedmovement += "u,S,";
+								ori = 3;
+							}
+							else if (waypoints.get(i+1).getOrientation() == Orientation.SOUTH)
+							{
+								//add turn right
+								plannedmovement += "i,S,";
+								ori = 1;
+							}
+							else if (waypoints.get(i+1).getOrientation() == Orientation.EAST)
+							{
+								//turn 180
+								plannedmovement += "u,u,S,";
+								ori = 4;
+							}
+							break;
+						}
+						//South
+						case 3:
+						{
+							if (waypoints.get(i+1).getOrientation() == Orientation.WEST)
+							{
+								//add turn left
+								plannedmovement += "u,S,";
+								ori = 2;
+							}
+							else if (waypoints.get(i+1).getOrientation() == Orientation.EAST)
+							{
+								//add turn right
+								plannedmovement += "i,S,";
+								ori = 4;
+							}
+							else if (waypoints.get(i+1).getOrientation() == Orientation.SOUTH)
+							{
+								//turn 180
+								plannedmovement += "u,u,S,";
+								ori = 1;
+							}
+							break;
+						}
+						//West
+						case 4:
+						{
+							if (waypoints.get(i+1).getOrientation() == Orientation.NORTH)
+							{
+								//add turn left
+								plannedmovement += "u,S,";
+								ori = 3;
+							}
+							else if (waypoints.get(i+1).getOrientation() == Orientation.SOUTH)
+							{
+								//add turn right
+								plannedmovement += "i,S,";
+								ori = 1;
+							}
+							else if (waypoints.get(i+1).getOrientation() == Orientation.WEST)
+							{
+								//turn 180
+								plannedmovement += "u,u,S,";
+								ori = 2;
+							}
+							break;
+						}
+					}
+				}
+				switch (ori)
+				{
+					//North
+					case 1:
+					{
+						if (k == 1)
+						{
+							ori = 4;
+							//add the on spot movement to planned movement
+							//turn left
+							plannedmovement += "u,";
+						}
+						else
+						{
+							ori = 2;
+							//add the on spot movement to planned movement
+							//turn right
+							plannedmovement += "i,";
+						}
+						break;
+					}
+					//East
+					case 2:
+					{
+						if (k==1)
+						{
+							ori = 1;
+							//add the on spot movement to planned movement
+							//turn right
+							plannedmovement += "u,";
+						}
+						else
+						{
+							ori = 3;
+							//add the on spot movement to planned movement
+							//turn left
+							plannedmovement += "i,";
+						}
+						break;
+					}
+					//South
+					case 3:
+					{
+						if (k== 1)
+						{
+							ori = 4;
+							//add the on spot movement to planned movement
+							//turn right
+							plannedmovement += "i,";
+						}
+						else
+						{
+							ori = 2;
+							//add the on spot movement to planned movement
+							//turn left
+							plannedmovement += "u,";
+						}
+						break;
+					}
+					//West
+					case 4:
+					{
+						if (k== 1)
+						{
+							ori = 3;
+							//add the on spot movement to planned movement
+							//turn left
+							plannedmovement += "u,";
+						}
+						else
+						{
+							ori = 1;
+							//add the on spot movement to planned movement
+							//turn right
+							plannedmovement += "i,";
+						}
+						break;
+					}
+					
+				}
+				AStar contingency = new AStar(20, 20, (int)waypoints.get(i).getX(), (int)waypoints.get(i).getY(), (int)waypoints.get(i+1).getX(), (int)waypoints.get(i+1).getY(), barrier, ori);
+				contingency.display();
+				contingency.process();
+				path = contingency.displaySolution();
+				contingencycheck = true;
+                finalori = contingency.FinalOrientation();
+                if (k == 4){
+                    finalori = ori;
+                    break;
+                }
+				k+=1;
 			}
-			plannedmovement += "S,";
+			if (onspot)
+            {
+                steps = new ArrayList<String>(Arrays.asList(plannedmovement.split(",")));
+				plannedmovement = "";
+				return;
+            }
+			if (path != null)
+            {
+                ori = path.get(0).orientation;
+                for (int j = path.size() - 2; j >= 0; j--) {
+                    Node temp = path.get(j);
+                    plannedmovement += temp.movement;
+                }
+            }
+			if (!contingencycheck)
+            {
+                finalori = astar.FinalOrientation();
+            }
+            //North = 1
+            if (finalori == 1){
+                if (waypoints.get(i+1).getOrientation() == Orientation.WEST) {
+                    plannedmovement += "i,S,u,";
+                }
+                else if (waypoints.get(i+1).getOrientation() == Orientation.EAST) {
+                    plannedmovement += "u,S,i,";
+                }
+                else if (waypoints.get(i+1).getOrientation() == Orientation.SOUTH){
+                    plannedmovement += "S,";
+                }
+                else if (waypoints.get(i+1).getOrientation() == Orientation.NORTH){
+                    plannedmovement += "u,u,S,i,i,";
+                }
+            }
+            //East = 2
+            else if (finalori == 2)
+            {
+                if (waypoints.get(i+1).getOrientation() == Orientation.NORTH) {
+                    plannedmovement += "i,S,u,";
+                }
+                else if (waypoints.get(i+1).getOrientation() == Orientation.SOUTH) {
+                    plannedmovement += "u,S,i,";
+                }
+                else if (waypoints.get(i+1).getOrientation() == Orientation.WEST){
+                    plannedmovement += "S,";
+                }
+                else if (waypoints.get(i+1).getOrientation() == Orientation.EAST){
+                    plannedmovement += "u,u,S,i,i,";
+                }
+            }
+            //South = 3
+            else if (finalori == 3)
+            {
+                if (waypoints.get(i+1).getOrientation() == Orientation.EAST) {
+                    plannedmovement += "i,S,u,";
+                }
+                else if (waypoints.get(i+1).getOrientation() == Orientation.WEST) {
+                    plannedmovement += "u,S,i,";
+                }
+                else if (waypoints.get(i+1).getOrientation() == Orientation.NORTH){
+                    plannedmovement += "S,";
+                }
+                else if (waypoints.get(i+1).getOrientation() == Orientation.SOUTH){
+                    plannedmovement += "u,u,S,i,i,";
+                }
+            }
+            //West = 4
+            else if (finalori == 4)
+            {
+                if (waypoints.get(i+1).getOrientation() == Orientation.SOUTH) {
+                    plannedmovement += "i,S,u,";
+                }
+                else if (waypoints.get(i+1).getOrientation() == Orientation.NORTH) {
+                    plannedmovement += "u,S,i,";
+                }
+                else if (waypoints.get(i+1).getOrientation() == Orientation.EAST){
+                    plannedmovement += "S,";
+                }
+                else if (waypoints.get(i+1).getOrientation() == Orientation.WEST){
+                    plannedmovement += "u,u,S,i,i,";
+                }
+            }
+			//plannedmovement += "S,";
 			System.out.print(plannedmovement);
 			System.out.println();
 		}
@@ -218,95 +476,6 @@ public class Robot extends SimObject
 
 		System.out.println(steps);
 	}
-		
-	/*for(Node n : path)
-		{
-			System.out.println(n.toString());
-			Node n1 = n;
-			while(n1.parent != null)
-			{
-				System.out.println(n1.parent.toString());
-				n1 = n1.parent;
-			}
-		}
-		
-		generateCommands(path.get(current_path));
-		
-		
-		commands.add(new Command(CommandType.MOVE, SimulatorS.getBlockSize()));
-		commands.add(new Command(CommandType.MOVE, SimulatorS.getBlockSize()));
-		commands.add(new Command(CommandType.MOVE, SimulatorS.getBlockSize()));
-		commands.add(new Command(CommandType.TURN, -Math.PI/2));
-		commands.add(new Command(CommandType.MOVE, SimulatorS.getBlockSize()));
-		commands.add(new Command(CommandType.MOVE, SimulatorS.getBlockSize()));
-		commands.add(new Command(CommandType.TURN, Math.PI/2));
-		commands.add(new Command(CommandType.MOVE, SimulatorS.getBlockSize()));
-		commands.add(new Command(CommandType.MOVE, SimulatorS.getBlockSize()));
-		
-	}*/
-	
-	/*void generateCommands(Node node)
-	{
-		commands = null;
-		commands = new ArrayList<Command>();
-		double curr_dir = 0.0, prev_dir = 0.0;
-		
-		while(node.parent != null)
-		{
-			curr_dir = getNodeDirection(node, node.parent);
-			// problem here
-			// might need to iterate backwards
-			// TODO:
-			/*if(node.parent.parent == null)
-			{
-				prev_dir = this.direction;
-				//generateTurnCommands(curr_dir, prev_dir);
-				node = node.parent;
-				continue;
-			}
-			*/
-			//else
-			//prev_dir = getNodeDirection(node.parent, node.parent.parent);
-			
-			//generateTurnCommands(curr_dir, prev_dir);
-			//commands.add(0, new Command(CommandType.MOVE, SimulatorS.getBlockSize()));
-			/*moveByNodeDir(node, node.parent);
-			node = node.parent;
-		}
-		System.out.println("~ Command: " + current_path);
-		for(Command c : commands)
-			System.out.println(c.toString());
-	}*/
-	
-	/*void moveByNodeDir(Node curr, Node prev)
-	{
-		int x = 0, y = 0;
-		// move west
-		if(curr.i < prev.i)
-		{
-			x = -1;
-		}
-		// move east
-		else if(curr.i > prev.i)
-		{
-			x = 1;
-		}
-		// move north
-		else if(curr.j > prev.j)
-		{
-			y = 1;
-		}
-		// move south
-		else if(curr.j > prev.j)
-		{
-			y = -1;
-		}
-		else
-			return;
-		
-		commands.add(0, new Command(CommandType.MOV2, x*SimulatorS.getBlockSize(), y*SimulatorS.getBlockSize()));
-		
-	}*/
 	
 	double getNodeDirection(Node curr, Node prev)
 	{
@@ -335,7 +504,7 @@ public class Robot extends SimObject
 		return dir;
 	}
 	
-	void generateTurnCommands(double target_dir, double prev_dir)
+	/*void generateTurnCommands(double target_dir, double prev_dir)
 	{
 		if(target_dir == prev_dir)
 			return;
@@ -353,19 +522,10 @@ public class Robot extends SimObject
 				commands.add(0, new Command(CommandType.TURN, Math.PI/2));
 			
 		}
-	}
+	}*/
 	
 	public void update()
 	{
-		// testing steering
-		/*
-		setDirection(direction - 0.01);
-		x += Math.cos(direction);
-		y += Math.sin(direction);
-		*/
-		
-		// movement update here
-		// must be based on delta time
 		
 		if(steps.size() != 0)
 		{
@@ -530,167 +690,60 @@ public class Robot extends SimObject
 				y+=0;
 				steps.remove(0);
 			}
-			/*else if (nextStep.equals("RR"))
-			{
-				if (stage == 0)
+			else if (nextStep.equals("u")){
+				if (dir == North)
 				{
-					if (dir == North)
-					{
-						setDirection(Math.PI);
-						dir = West;
-						stage++;
-					}
-					else if(dir == South)
-					{
-						setDirection(0.0);
-						dir = East;
-						stage++;
-					}
-					else if(dir == West)
-					{
-						setDirection(-Math.PI/2);
-						dir = South;
-						stage++;
-					}
-					else if (dir== East)
-					{
-						setDirection(Math.PI/2);
-						dir = North;
-						stage++;
-					}
-				}
-				else if (stage == 1||stage == 2||stage == 3)
-				{
-					if (dir == North)
-					{
-						y-=30;
-						stage++;	
-					}
-					else if(dir == South)
-					{
-						y+=30;
-						stage++;
-					}
-					else if(dir == West)
-					{
-						x +=30;
-						stage++;
-					}
-					else if (dir== East)
-					{
-						x -= 30;
-						stage++;
-					}
-				}
-				if (stage == 4){
-					stage = 0;
-					steps.remove(0);
-				}
-			}
-			else if (nextStep.equals("RL"))
-			{
-				if (stage == 0)
-				{
-					if (dir == North)
-					{
-						setDirection(0.0);
-						dir = East;
-						stage++;
-					}
-					else if(dir == South)
-					{
-						setDirection(Math.PI);
-						dir = West;
-						stage++;
-					}
-					else if(dir == West)
-					{
-						setDirection(Math.PI/2);
-						dir = North;
-						stage++;
-					}
-					else if (dir== East)
-					{
-						setDirection(-Math.PI/2);
-						dir = South;
-						stage++;
-					}
-				}
-				else if (stage == 1||stage == 2||stage == 3)
-				{
-					if (dir == North)
-					{
-						y-=30;
-						stage++;	
-					}
-					else if(dir == South)
-					{
-						y+=30;
-						stage++;
-					}
-					else if(dir == West)
-					{
-						x +=30;
-						stage++;
-					}
-					else if (dir== East)
-					{
-						x -= 30;
-						stage++;
-					}
-				}
-				if (stage == 4){
-					stage = 0;
-					steps.remove(0);
-				}
-			}*/
-		}
+					setDirection(Math.PI);
+					dir = West;
 
+				}
+				else if(dir == South)
+				{
+					setDirection(0.0);
+					dir = East;
+
+				}
+				else if(dir == West)
+				{
+					setDirection(-Math.PI/2);
+					dir = South;
+
+				}
+				else if (dir== East)
+				{
+					setDirection(Math.PI/2);
+					dir = North;
+
+				}
+				steps.remove(0);
+			}
+			else if (nextStep.equals("i")){
+				if (dir == North)
+				{
+					setDirection(0.0);
+					dir = East;
+
+				}
+				else if(dir == South)
+				{
+					setDirection(Math.PI);
+					dir = West;
+
+				}
+				else if(dir == West)
+				{
+					setDirection(Math.PI/2);
+					dir = North;
+
+				}
+				else if (dir== East)
+				{
+					setDirection(-Math.PI/2);
+					dir = South;
+				}
+				steps.remove(0);
+			}
+		}
 	}
-			//return;
-		
-		/*Command currCmd = commands.get(current_command);
-		
-		switch(currCmd.command_type)
-		{
-			case WAIT:
-				break;
-			case MOVE:
-				x += Math.cos(direction) * currCmd.arg1;
-				y += Math.sin(direction) * currCmd.arg1;
-				break;
-			case TURN:
-				setDirection(direction + currCmd.arg1);
-				break;
-			case MOV2:
-				x += currCmd.arg1;
-				y += currCmd.arg2;
-				break;
-			default:
-				break;
-		}
-		
-		// when reached waypoint, current_wp++
-		if(current_command+1 >= commands.size())
-		{
-
-			//SimulatorManager.getInstance().timer.stop();
 			
-			current_command = 0;
-			if(current_path+1 >= path.size())
-			{
-				SimulatorManager.getInstance().timer.stop();
-			}
-			else
-			{
-				current_path++;
-				generateCommands(path.get(current_path));
-			}
-			
-		}
-		else
-		{
-			current_command++;
-		}*/
-
 }

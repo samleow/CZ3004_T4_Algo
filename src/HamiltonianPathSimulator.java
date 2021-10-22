@@ -9,11 +9,9 @@ import src.Position.Orientation;
 public class HamiltonianPathSimulator
 {
 	List<CarPosition> fastest_path = new ArrayList<CarPosition>();
-	
+	Double TurningRadius = 20.0;
 	public HamiltonianPathSimulator(List<Position> obstacles)
 	{
-		//List<Position> obstacles = new ArrayList<Position>();
-		//obstacles.add(0, new Position(1, 1, Orientation.NORTH)); //This mat be used for trip planning
 		
 		List<CarPosition> positions = new ArrayList<CarPosition>();
 		// List of waypoints/nodes
@@ -21,11 +19,6 @@ public class HamiltonianPathSimulator
 		{
 			positions.add(new CarPosition(obs.x, obs.y, obs.orientation, true));
 		}
-		
-		/*positions.add(new CarPosition(1, 1, Orientation.WEST));
-		positions.add(new CarPosition(8, 5, Orientation.NORTH));
-		positions.add(new CarPosition(7, 3, Orientation.EAST));
-		positions.add(new CarPosition(3, 3, Orientation.WEST));*/
 		
 		List<CarPosition> shortest_path = new ArrayList<CarPosition>();
 		CarPosition start = new CarPosition(1, 5, Orientation.SOUTH, true); //1, 4.5, Orientation.SOUTH, true); //calibrate to 1,1
@@ -37,11 +30,69 @@ public class HamiltonianPathSimulator
 		for (int i=0; i<positions.size(); i++)
 		{
 			// Initialized to maximum possible distance in the grid
-			double traveldist = Math.sqrt(2 * Math.pow(20, 2));
+			double traveldist = Math.sqrt(2 * Math.pow(20, 2)) + 4*20.0; //added the turning radius
 			// Loops through all waypoints for shortest neighbour link
 			for (CarPosition ac : positions)
 			{
 				double pythagoras = Math.sqrt(Math.pow(start.x - ac.x, 2) + Math.pow(start.y - ac.y, 2));
+				/*switch(start.orientation) {
+						//NORTH
+						case NORTH:
+						  if (ac.orientation==Orientation.WEST && ac.x<start.x) {
+							pythagoras += 3*TurningRadius;
+							break;
+						  }
+						  else if (ac.orientation==Orientation.EAST && ac.x>start.x) {
+							pythagoras += 3*TurningRadius;
+							break;
+						  }
+						  else if (ac.orientation==Orientation.NORTH) {
+							pythagoras += 2*TurningRadius;
+							break;
+						  }
+						//EAST
+						case EAST:
+						  if (ac.orientation==Orientation.NORTH && ac.y>start.y) {
+							pythagoras += 3*TurningRadius;
+							break;
+						  }
+						  else if (ac.orientation==Orientation.SOUTH && ac.y<start.y) {
+							pythagoras += 3*TurningRadius;
+							break;
+						  }
+						  else if (ac.orientation==Orientation.EAST) {
+							pythagoras += 2*TurningRadius;
+							break;
+						  }
+						//SOUTH
+						case SOUTH:
+						  if (ac.orientation==Orientation.WEST && ac.x<start.x) {
+							pythagoras += 3*TurningRadius;
+							break;
+						  }
+						  else if (ac.orientation==Orientation.EAST && ac.x>start.x) {
+							pythagoras += 3*TurningRadius;
+							break;
+						  }
+						  else if (ac.orientation==Orientation.SOUTH) {
+							pythagoras += 2*TurningRadius;
+							break;
+						  }
+						//WEST
+						case WEST:
+						  if (ac.orientation==Orientation.NORTH && ac.x>start.y) {
+							pythagoras += 3*TurningRadius;
+							break;
+						  }
+						  else if (ac.orientation==Orientation.SOUTH && ac.x<start.y) {
+							pythagoras += 3*TurningRadius;
+							break;
+						  }
+						  else if (ac.orientation==Orientation.WEST) {
+							pythagoras += 2*TurningRadius;
+							break;
+						  }
+					  }*/
 				if (pythagoras < traveldist && ac.visited != true)
 				{
 					traveldist = pythagoras;
@@ -80,8 +131,68 @@ public class HamiltonianPathSimulator
 				{
 					double new_x = item.getNeighbours().get(i).x;
 					double new_y = item.getNeighbours().get(i).y;
+					double dist = Math.sqrt(Math.pow(item.x - new_x, 2) + Math.pow(item.y - new_y, 2));
+					int size = item.path.size();
+					/*switch(item.path.get(size-1).orientation) {
+						//NORTH
+						case NORTH:
+						  if (item.getNeighbours().get(i).orientation==Orientation.WEST && new_x<item.path.get(size-1).getX()) {
+							dist += 3*TurningRadius;
+							break;
+						  }
+						  else if (item.getNeighbours().get(i).orientation==Orientation.EAST && new_x>item.path.get(size-1).getX()) {
+							dist += 3*TurningRadius;
+							break;
+						  }
+						  else if (item.getNeighbours().get(i).orientation==Orientation.NORTH) {
+							dist += 2*TurningRadius;
+							break;
+						  }
+						//EAST
+						case EAST:
+						  if (item.getNeighbours().get(i).getOrientation()==Orientation.NORTH && new_y>item.path.get(size-1).getY()) {
+							dist += 3*TurningRadius;
+							break;
+						  }
+						  else if (item.getNeighbours().get(i).getOrientation()==Orientation.SOUTH && new_y<item.path.get(size-1).getY()) {
+							dist += 3*TurningRadius;
+							break;
+						  }
+						  else if (item.getNeighbours().get(i).getOrientation()==Orientation.EAST) {
+							dist += 2*TurningRadius;
+							break;
+						  }
+						//SOUTH
+						case SOUTH:
+						  if (item.getNeighbours().get(i).getOrientation()==Orientation.WEST && new_x<item.path.get(size-1).getX()) {
+							dist += 3*TurningRadius;
+							break;
+						  }
+						  else if (item.getNeighbours().get(i).getOrientation()==Orientation.EAST && new_x>item.path.get(size-1).getX()) {
+							dist += 3*TurningRadius;
+							break;
+						  }
+						  else if (item.getNeighbours().get(i).getOrientation()==Orientation.SOUTH) {
+							dist += 2*TurningRadius;
+							break;
+						  }
+						//WEST
+						case WEST:
+						  if (item.getNeighbours().get(i).getOrientation()==Orientation.NORTH && new_y>item.path.get(size-1).getY()) {
+							dist += 3*TurningRadius;
+							break;
+						  }
+						  else if (item.getNeighbours().get(i).getOrientation()==Orientation.SOUTH && new_y<item.path.get(size-1).getY()) {
+							dist += 3*TurningRadius;
+							break;
+						  }
+						  else if (item.getNeighbours().get(i).getOrientation()==Orientation.WEST) {
+							dist += 2*TurningRadius;
+							break;
+						  }
+					  }*/
 					double new_cost = item.getCost()
-							+ Math.sqrt(Math.pow(item.x - new_x, 2) + Math.pow(item.y - new_y, 2));
+							+ dist;
 					List<CarPosition> new_path = new ArrayList<CarPosition>(item.getPath());
 					new_path.add(item.getNeighbours().get(i));
 					List<CarPosition> new_neighbours = new ArrayList<CarPosition>(item.getNeighbours());
@@ -151,11 +262,6 @@ public class HamiltonianPathSimulator
 	}
 	public List<CarPosition> getCarPositions(){
 		return fastest_path;
-	}
-	public static void main(String args[])
-	{
-		HamiltonianPath a = new HamiltonianPath();
-
 	}
 	
 }

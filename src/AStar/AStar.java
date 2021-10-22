@@ -22,7 +22,7 @@ public class AStar
     private int ori;
     private int endori;
 
-    public AStar(int width, int height, int si, int sj, int ei, int ej, int [][] blocks, int orientation, int endorientation)
+    public AStar(int width, int height, int si, int sj, int ei, int ej, int [][] blocks, int orientation)
     {
         grid = new Node[width][height];
         closedCells = new boolean[width][height];
@@ -31,7 +31,6 @@ public class AStar
 
         });
         this.ori = orientation;
-        this.endori = endorientation;
         startNode(si,sj);
         endNode(ei,ej);
         for (int i= 0; i<grid.length;i++){
@@ -91,7 +90,7 @@ public class AStar
                     break;
                 
                 closedCells[current.i][current.j] = true;
-                if (current.equals(grid[endI][endJ]) && current.orientation == endori)
+                if (current.equals(grid[endI][endJ]))
                     return;
 
                 Node t;
@@ -102,14 +101,33 @@ public class AStar
                     case North:
                         if (current.j -2 >=0)
                         {
-                            t = grid[current.i][current.j-1];
-                            UpdateCostifNeeded(current, t, current.finalCost + v_h_cost, North, "R,");
+                            boolean noobs = true;
+                            for (int i= -1;i<2;i++)
+                            {
+                                if (grid[current.i+i][current.j-1] == null)
+                                    noobs = false;
+                            }
+                            if (noobs)
+                            {
+                                t = grid[current.i][current.j-1];
+                                UpdateCostifNeeded(current, t, current.finalCost + v_h_cost, North, "R,");
+                            }
+                            
                         }
                         //forward
                         if (current.j+2 <grid[0].length)
                         {
-                            t = grid[current.i][current.j+1];
-                            UpdateCostifNeeded(current, t, current.finalCost + v_h_cost, North, "F,");
+                            boolean noobs = true;
+                            for (int i= -1;i<2;i++)
+                            {
+                                if (grid[current.i+i][current.j+1] == null)
+                                    noobs = false;
+                            }
+                            if (noobs)
+                            {
+                                t = grid[current.i][current.j+1];
+                                UpdateCostifNeeded(current, t, current.finalCost + v_h_cost, North, "F,");
+                            }
                         }
                         if (current.j+3<grid[0].length && current.i+4<grid.length)
                         {
@@ -150,14 +168,32 @@ public class AStar
                         //backward
                         if (current.j +2 <grid[0].length)
                         {
-                            t = grid[current.i][current.j+1];
-                            UpdateCostifNeeded(current, t, current.finalCost + v_h_cost, South, "R,");
+                            boolean noobs = true;
+                            for (int i= -1;i<2;i++)
+                            {
+                                if (grid[current.i+i][current.j+1] == null)
+                                    noobs = false;
+                            }
+                            if (noobs)
+                            {
+                                t = grid[current.i][current.j+1];
+                                UpdateCostifNeeded(current, t, current.finalCost + v_h_cost, South, "R,");
+                            }
                         }
                         //forward
                         if (current.j-2 >= 0)
                         {
-                            t = grid[current.i][current.j-1];
-                            UpdateCostifNeeded(current, t, current.finalCost + v_h_cost, South, "F,");
+                            boolean noobs = true;
+                            for (int i= -1;i<2;i++)
+                            {
+                                if (grid[current.i+i][current.j-1] == null)
+                                    noobs = false;
+                            }
+                            if (noobs)
+                            {
+                                t = grid[current.i][current.j-1];
+                                UpdateCostifNeeded(current, t, current.finalCost + v_h_cost, South, "F,");
+                            }
                         }
                         if (current.j-3>=0 && current.i-4>=0)
                         {
@@ -198,14 +234,32 @@ public class AStar
                         //forward
                         if (current.i +2 <grid[0].length)
                         {
-                            t = grid[current.i+1][current.j];
-                            UpdateCostifNeeded(current, t, current.finalCost + v_h_cost, East, "F,");
+                            boolean noobs = true;
+                            for (int j= -1;j<2;j++)
+                            {
+                                if (grid[current.i+1][current.j+j] == null)
+                                    noobs = false;
+                            }
+                            if (noobs)
+                            {
+                                t = grid[current.i+1][current.j];
+                                UpdateCostifNeeded(current, t, current.finalCost + v_h_cost, East, "F,");
+                            }
                         }
                         //backward
                         if (current.i-2 >= 0)
                         {
-                            t = grid[current.i-1][current.j];
-                            UpdateCostifNeeded(current, t, current.finalCost + v_h_cost, East, "R,");
+                            boolean noobs = true;
+                            for (int j= -1;j<2;j++)
+                            {
+                                if (grid[current.i-1][current.j+j] == null)
+                                    noobs = false;
+                            }
+                            if (noobs)
+                            {
+                                t = grid[current.i-1][current.j];
+                                UpdateCostifNeeded(current, t, current.finalCost + v_h_cost, East, "R,");
+                            }
                         }
                         if (current.j+4< grid[0].length && current.i+3<grid.length)
                         {
@@ -246,14 +300,32 @@ public class AStar
                         //forward
                         if (current.i -2 >= 0)
                         {
-                            t = grid[current.i-1][current.j];
-                            UpdateCostifNeeded(current, t, current.finalCost + v_h_cost, West, "F,");
+                            boolean noobs = true;
+                            for (int j= -1;j<2;j++)
+                            {
+                                if (grid[current.i-1][current.j+j] == null)
+                                    noobs = false;
+                            }
+                            if (noobs)
+                            {
+                                t = grid[current.i-1][current.j];
+                                UpdateCostifNeeded(current, t, current.finalCost + v_h_cost, West, "F,");
+                            }
                         }
                         //backward
                         if (current.i+2 < grid.length)
                         {
-                            t = grid[current.i+1][current.j];
-                            UpdateCostifNeeded(current, t, current.finalCost + v_h_cost, West, "R,");
+                            boolean noobs = true;
+                            for (int j= -1;j<2;j++)
+                            {
+                                if (grid[current.i+1][current.j+j] == null)
+                                    noobs = false;
+                            }
+                            if (noobs)
+                            {
+                                t = grid[current.i+1][current.j];
+                                UpdateCostifNeeded(current, t, current.finalCost + v_h_cost, West, "R,");
+                            }
                         }
                         if (current.j+4<grid[0].length && current.i-3>=0)
                         {
@@ -514,6 +586,7 @@ public class AStar
             if (closedCells[endI][endJ]){
                 System.out.println("Solution:");
                 Node current = grid[endI][endJ];
+                endori = current.orientation;
                 trip.add(current);
                 System.out.println(current);
                 grid[current.i][current.j].solution = true;
@@ -540,7 +613,11 @@ public class AStar
                 }System.out.println();
 
             }else
+            {
                 System.out.println("No possible Path");
+                trip = null;// empty arraylist
+            }
+                
             return trip;
 
         }
@@ -554,10 +631,13 @@ public class AStar
         }
         public static void main(String[] args){
             AStar astar = new AStar(15, 15, 1, 1, 5, 6, new int[][]{
-            }, North, South);
+            }, North);
             astar.display();
             astar.process();
             astar.displayScores();
             astar.displaySolution();
+        }
+        public int FinalOrientation() {
+            return endori;
         }
 }

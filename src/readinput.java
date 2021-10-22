@@ -55,10 +55,5 @@ public class readinput{
     	return null;
     }
 
-    public static void main (String args[])
-    {
-    	SimulatorLayer s  = new SimulatorLayer(new readinput().getObstacles());
-    }
-
 }
 
